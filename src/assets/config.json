@@ -1,0 +1,12 @@
+{
+  "login": "inovatika",
+  "instance": "k7",
+  "defaultLang": "cs",
+  "deployPath": "",
+  "authBaseUrl": "https://k7.inovatika.dev/search/api/client/v7.0",
+  "keycloak": {
+		"loginType": "form",
+		"logoutUrl": "/login" 
+  }
+
+}

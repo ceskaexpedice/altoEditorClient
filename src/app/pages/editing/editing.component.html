@@ -1,0 +1,65 @@
+<div class="app-fxLayout-column app-fxFlexFill">
+  <div class="app-breadcrumbsbar app-fxLayout-row app-fxLayout-center-v">
+    <div class="app-breadcrumbs app-fxFlex app-fxLayout-row app-fxLayout-center-v">
+      <a routerLink="/"><mat-icon>home</mat-icon></a>
+      <span class="app-separator">/</span>
+      <span >{{ 'navbar.editing' | translate }}</span>
+      <span class="app-separator">: </span>
+      <span class="app-last">{{ state.currentObject?.parentLabel }} - {{ state.currentObject?.label }}</span>
+    </div>
+    <div class="app-h-100">
+      <!-- <button mat-button [matMenuTriggerFor]="menu">PERO</button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let p of priorities" (click)="generatePERO(p)">{{ 'desc.priority' | translate }}: {{'priority.' + p | translate}}</button>
+      </mat-menu> -->
+      <!-- <button mat-button (click)="save()">{{ 'button.save' | translate }}</button> -->
+    </div>
+  </div>
+  <div class="app-content-wrapper app-fxFlex">
+    <as-split direction="horizontal" class="app-border-wrapper" (dragEnd)="splitChanged($event)">
+      <as-split-area [size]="50" #scroller>
+        <div class="app-fxLayout app-column app-fill">
+          <div class="app-toolbar app-fxLayout app-row app-center-v app-pl-2 app-pr-2">
+            <button mat-icon-button (click)="zoomImg(1.4)"><mat-icon>zoom_in</mat-icon></button>
+            <button mat-icon-button (click)="zoomImg(.75)"><mat-icon>zoom_out</mat-icon></button>
+            <button mat-icon-button (click)="zoomImgReset()"><mat-icon>zoom_in_map</mat-icon></button>
+          </div>
+          <div class="app-fxFlex">
+            <app-viewer *ngIf="pid" [pid]="pid" [selectedAlto]="state.selectedAlto" [scroller]="scroller" [width]="viewerWidth" [imgW]="imgW"></app-viewer>
+          </div>
+        </div>
+
+        <!-- <app-viewer *ngIf="pid" [pid]="pid" [selectedAlto]="state.selectedAlto" [scroller]="scroller" [width]="viewerWidth" (selectionEvent)="setSelectedArea($event)"></app-viewer> -->
+      </as-split-area>
+      <as-split-area [size]="50">
+
+
+        <div class="app-fxLayout app-column app-fill" >
+          <div class="app-toolbar app-fxLayout app-row app-center-v app-pl-2 app-pr-2">
+            <strong class="app-fxFlex">{{ state.currentObject?.versionXml }}</strong>
+            <div>  
+              <button mat-icon-button (click)="zoom(1.1)" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_in</mat-icon></button>
+              <button mat-icon-button (click)="zoom(.9)" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_out</mat-icon></button>
+              <button mat-icon-button (click)="zoomReset()" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_in_map</mat-icon></button>
+              <button mat-icon-button (click)="save()" [disabled]="panelMode !== 'ocr'"><mat-icon>save</mat-icon></button>
+              <button mat-icon-button (click)="panelMode = 'xml'" [class.app-active]="panelMode === 'xml'"><mat-icon>code</mat-icon></button>
+              <button mat-icon-button (click)="panelMode = 'ocr'" [class.app-active]="panelMode === 'ocr'"><mat-icon>edit_note</mat-icon></button>
+              <button mat-icon-button *ngIf="!state.currentObject" [matMenuTriggerFor]="menu" [matTooltip]="'button.PERO' | translate"><mat-icon>scanner</mat-icon></button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngFor="let p of priorities" (click)="generatePERO(p)">{{ 'desc.priority' | translate }}: {{'priority.' + p | translate}}</button>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="app-fxFlex app-oa-y">
+            <ng-container *ngIf="panelMode === 'xml'">
+              <pre class="app-m-0"><code [highlight]="state.altoXml"  [languages]="['xml']"></code></pre>
+            </ng-container>
+            <ng-container *ngIf="panelMode === 'ocr'" >
+              <app-ocr-editor [selectedWords]="state.selectedWords" [printSpace]="state.printSpace" [printSpaceDiff]="state.printSpace0" [canEdit]="true" (setArea)="setArea($event)" [divZoom]="divZoom"></app-ocr-editor>
+            </ng-container>
+          </div>
+        </div>
+      </as-split-area>
+    </as-split>
+  </div>
+</div>

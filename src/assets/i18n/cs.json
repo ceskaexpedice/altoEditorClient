@@ -1,0 +1,93 @@
+{
+  "navbar": {
+    "editing": "Editace",
+    "revision": "Revize",
+    "processManagement": "Správa procesů",
+    "my_objects": "Moje editace",
+    "login": "Přihlásit",
+    "logout": "Odhlásit se"
+  },
+  "button": {
+    "save": "Uložit",
+    "close": "Zavřít",
+    "pen": "PERO",
+    "edit": "Editovat",
+    "viewDetail": "Zobrazit detail",
+    "markAsMajorVersion": "Označit jako hlavní verzi",
+    "markForDeletion": "Označit ke smazání",
+    "editTheGivenVersion": "Editovat danou verzi",
+    "saveChangesToKramerius": "Uložit změny do Krameria",
+    "saveChangesToProarc": "Uložit změny do ProArcu",
+    "PERO": "Vygenerovat novou textovou vrstvu pomoci PERO",
+    "generate": "Vygenerovat",
+    "logIn": "Přihlásit se"
+  },
+  "desc": {
+    "id": "Id",
+    "pid": "Pid",
+    "createDate": "Vytvořeno",
+    "updateDate": "Upraveno",
+    "label": "Název",
+    "state": "Stav",
+    "priority": "Priorita",
+    "type": "Typ",
+    "instance": "Instance",
+    "date": "Datum",
+    "edited": "Editoval",
+    "substate": "Podstav",
+    "filterByPid": "Filtrovat dle pidu",
+    "filterByDate": "Filtrovat dle data",
+    "filterByLabel": "Filtrovat dle názvu",
+    "filterByUser": "Filtrovat dle uživatele",
+    "filterByCreateDate": "Filtrovat dle data vytvoření",
+    "filterByUpdateDate": "Filtrovat dle data zmeny",
+    "filterByStatus": "Filtrovat dle stavu",
+    "filterByPriority": "Filtrovat dle priority",
+    "savedSuccess": "Změny úspěšně uložené",
+    "PEROExists": "Alto soubor již byl přegenerován",
+    "markSuccess": "Označit úspěšně proběhlo",
+    "noPERO_dialog": "Vygenerovat novou textovou vrstvu pomoci PERO",
+    "version": "Verze",
+    "connectedInstance": "Připojená instance"
+  },
+  "state": {
+    "PLANNED": "Plánované",
+    "RUNNING": "Běží",
+    "FAILED": "Chyba",
+    "DONE": "Dokončeno",
+    "DOWNLOADING": "Stahování",
+    "GENERATING": "Generování",
+    "SAVING": "Ukládání",
+    "REJECTED": "Odmítnuto",
+    "EDITED": "Upraveno",
+    "ACCEPTED": "Přijato",
+    "UPLOADED": "Nahráno",
+    "NEW": "Nové",
+    "GENERATED": "Vygenerováno"
+  },
+  "priority": {
+    "LOW": "Nízká",
+    "MEDIUM": "Střední",
+    "HIGH": "Vysoká"
+  },
+  "type": {
+    "MULTIPLE": "Mnohonásobný",
+    "SINGLE": "Jediný"
+  },
+  "paginator": {
+    "desc": {
+      "Číslo stránky": "Číslo stránky",
+      "Řazení": "Řadit podle",
+      "itemsPerPageLabel" : "Počet záznamů na stránce",
+      "nextPageLabel" : "Následující stránka",
+      "previousPageLabel" : "Předchozí stránka",
+      "firstPageLabel": "První stránka",
+      "lastPageLabel": "Poslední stránka",
+      "rangeLabel1": "0 z {{length}}",
+      "rangeLabel2": "{{startIndex}} - {{endIndex}} z {{length}}"
+    },
+    "tooltip": {
+      "Přejděte číslo stránky": "Přejít na stránku"
+    }
+  }
+}

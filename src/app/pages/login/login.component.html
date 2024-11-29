@@ -1,0 +1,15 @@
+<div class="app-fxLayout-column app-fxFlex app-fxFlexFill ">
+	<div >
+		<mat-card class="app-view-alert app-warn app-center-h" *ngIf="errorMessage">
+			<mat-card-content>{{ 'alert.login.' + errorMessage | translate }}</mat-card-content>
+		</mat-card>
+		<mat-card class="app-card app-view-border app-mb-4 app-mt-4">
+			<mat-card-content>	
+				<strong class="app-mr-2">{{ 'button.logIn' | translate }}</strong>
+			</mat-card-content>
+		</mat-card>
+		<button mat-flat-button (click)="login()" color="primary">
+			{{ errorMessage ? ('button.signInAgain' | translate) : ('button.logIn' | translate) }}
+		</button>
+	</div>
+</div>

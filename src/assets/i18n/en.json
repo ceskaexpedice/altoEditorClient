@@ -1,0 +1,93 @@
+{
+  "navbar": {
+    "editing": "Editing",
+    "revision": "Revision",
+    "processManagement": "Process management",
+    "my_objects": "My editings",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "button": {
+    "save": "Save",
+    "close": "Close",
+    "pen": "PERO",
+    "edit": "Edit",
+    "viewDetail": "Show detail",
+    "markAsMajorVersion": "Mark as major version",
+    "markForDeletion": "Mark for deletion",
+    "editTheGivenVersion": "Edit the given version",
+    "saveChangesToKramerius": "Save changes to Kramerius",
+    "saveChangesToProarc": "Save changes to ProArc",
+    "PERO": "Create new text layer using PERO",
+    "generate": "Create",
+    "logIn": "Login"
+  },
+  "desc": {
+    "id": "Id",
+    "pid": "Pid",
+    "createDate": "Created",
+    "updateDate": "Modified",
+    "label": "Label",
+    "state": "State",
+    "priority": "Priority",
+    "type": "Type",
+    "instance": "Instance",
+    "date": "Date",
+    "edited": "Edited",
+    "substate": "Substate",
+    "filterByPid": "Filter by pid",
+    "filterByDate": "Filter by date",
+    "filterByLabel": "Filter by label",
+    "filterByUser": "Filter by user",
+    "filterByCreateDate": "Filter by created date",
+    "filterByUpdateDate": "Filter by updated date",
+    "filterByStatus": "Filter by status",
+    "filterByPriority": "Filter by priority",
+    "savedSuccess": "Changes successfully saved",
+    "PEROExists": "Alto file already exists",
+    "markSuccess": "Mark success",
+    "noPERO_dialog": "Create new text layer using PERO",
+    "version": "Version",
+    "connectedInstance": "Connected instance"
+  },
+  "state": {
+    "PLANNED": "Planned",
+    "RUNNING": "Running",
+    "FAILED": "Failed",
+    "DONE": "Done",
+    "DOWNLOADING": "Downloading",
+    "GENERATING": "Generating",
+    "SAVING": "Saving",
+    "REJECTED": "Rejected",
+    "EDITED": "Edited",
+    "ACCEPTED": "Accepted",
+    "UPLOADED": "Uploaded",
+    "NEW": "New",
+    "GENERATED": "Generated"
+  },
+  "priority": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High"
+  },
+  "type": {
+    "MULTIPLE": "Multiple",
+    "SINGLE": "Single"
+  },
+  "paginator": {
+    "desc": {
+      "Číslo stránky": "Page number",
+      "Řazení": "Order by",
+      "itemsPerPageLabel" : "Records per page",
+      "nextPageLabel" : "Next page",
+      "previousPageLabel" : "Previous page",
+      "firstPageLabel": "First page",
+      "lastPageLabel": "Last page",
+      "rangeLabel1": "0 of {{length}}",
+      "rangeLabel2": "{{startIndex}} - {{endIndex}} of {{length}}"
+    },
+    "tooltip": {
+      "Přejděte číslo stránky": "Go to page"
+    }
+  }
+}

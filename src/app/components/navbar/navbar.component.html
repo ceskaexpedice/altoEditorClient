@@ -1,0 +1,32 @@
+<mat-toolbar color="primary" class="app-fxLayout-row">
+  <div class="app-fxFlex">
+    <span [routerLink]="['/']" class="app-cursor-pointer">AltoEditor</span>
+  </div>
+  <div>
+   <!-- <a mat-button [routerLink]="[pid, 'editing']" routerLinkActive="active">{{ 'navbar.editing' | translate }}</a> -->
+   <a mat-button [routerLink]="['/home']"   routerLinkActive="active">{{ 'navbar.my_objects' | translate }}</a>
+   <a mat-button [routerLink]="['/revision']"   routerLinkActive="active">{{ 'navbar.revision' | translate }}</a>
+   <a mat-button [routerLink]="['/process-management']"   routerLinkActive="active">{{ 'navbar.processManagement' | translate }}</a>
+   <ng-container *ngIf="auth.isLoggedIn()">
+      <a [matMenuTriggerFor]="profile_menu" mat-button class="app-avatar">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          {{ auth.getTextProfileImage() }}
+        </div>
+      </a>
+      <div *ngIf="tokenSeconds" class="app-badge app-session" [matTooltip]="'batch.sessionExpire' | translate">{{ tokenHours+":"+tokenMinutes+":"+tokenSeconds }}</div>
+    </ng-container>
+    <mat-menu #profile_menu="matMenu">
+      <button mat-menu-item *ngIf="auth.user" (click)="openUserInfoDialog()">
+        <mat-icon>person</mat-icon>
+        <span>{{ auth.user.name || auth.user.uid }}</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>{{ 'navbar.logout' | translate }}</span>
+      </button>
+    </mat-menu>
+   <!-- <a mat-button>{{ 'navbar.login' | translate }}</a> -->
+   <a mat-button *ngIf="translator.currentLang === 'en'" (click)="onLanguageChanged('cs')">cs</a>
+   <a mat-button *ngIf="translator.currentLang === 'cs'" (click)="onLanguageChanged('en')">en</a>
+  </div>
+</mat-toolbar>

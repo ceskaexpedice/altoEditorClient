@@ -1,0 +1,8 @@
+<div class="app-h-100 app-oa-y" #scrollerN>
+  <div style="position: relative;">
+    <img [src]="'/api/object/image?pid=' + pid + '&login=' + config.login + '&instance=' + config.instance"  (load)="getInfo()" #image 
+        style="position: absolute;width:100%;" [style.width]="_imgW + '%'" />
+    <canvas id="autoCanvas" #autoCanvas></canvas>
+    <canvas id="selCanvas" #selCanvas></canvas>
+  </div>
+</div>

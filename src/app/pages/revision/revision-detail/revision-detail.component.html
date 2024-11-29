@@ -1,0 +1,132 @@
+<div class="app-fxLayout-column app-fxFlexFill">
+  <div class="app-breadcrumbsbar app-fxLayout-row app-fxLayout-center-v">
+    <div class="app-breadcrumbs app-fxFlex app-fxLayout-row app-fxLayout-center-v">
+      <a routerLink="/"><mat-icon>home</mat-icon></a>
+      <span class="app-separator">/</span>
+      <a routerLink="/revision">{{ 'navbar.revision' | translate }}</a>
+      <span class="app-separator">/</span>
+      <span class="app-last">{{ state.currentObject?.parentLabel }} - {{ state.currentObject?.label }}</span>
+    </div>
+    <div class="app-h-100">
+      <button mat-button (click)="markAsMajorVersion()" [disabled]="!selectedVersion">{{ 'button.markAsMajorVersion' | translate }}</button>
+      <button mat-button (click)="markForDeletion()" [disabled]="!selectedVersion">{{ 'button.markForDeletion' | translate }}</button>
+      <button mat-button (click)="gotoObject()" [disabled]="!selectedVersion">{{ 'button.editTheGivenVersion' | translate }}</button>
+      <button mat-button (click)="uploadKramerius()" [disabled]="!selectedVersion">{{ 'button.saveChangesToKramerius' | translate }}</button>
+      <!-- <button mat-button>{{ 'button.saveChangesToProarc' | translate }}</button> -->
+    </div>
+  </div>
+  <div class="app-content-wrapper app-fxFlex">
+    <as-split direction="vertical" class="app-border-wrapper" (dragEnd)="asDragEndHor($event)">
+      <as-split-area [size]="hor_size">
+        <as-split direction="horizontal" (dragEnd)="asDragEndTop($event)">
+          <as-split-area [size]="top_left_size">
+            <div class="app-fxLayout app-column app-fill">
+              <div class="app-toolbar app-fxLayout app-center-v app-pl-2 app-pr-2">
+                <strong>Seznam verzi objektu ({{pid}})</strong>
+              </div>
+              <div class="app-fxFlex app-oa-y">
+                <table mat-table [dataSource]="versions" class="app-w-100 app-striped app-hover">
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>id</th>
+                    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                  </ng-container>
+                
+                  <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let element">{{ element.datum | date : 'dd.MM.yyyy HH:mm:SS' }}</td>
+                  </ng-container>
+                
+                  <ng-container matColumnDef="state">
+                    <th mat-header-cell *matHeaderCellDef>State</th>
+                    <td mat-cell *matCellDef="let element">
+                      <span class="app-badge" [ngClass]="'app-' + element.state">{{ 'state.' + element.state | translate }}</span>
+                    </td>
+                  </ng-container>
+                
+                  <ng-container matColumnDef="version">
+                    <th mat-header-cell *matHeaderCellDef>Version</th>
+                    <td mat-cell *matCellDef="let element">{{ element.versionXml }}</td>
+                  </ng-container>
+                
+                  <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef>Editoval</th>
+                    <td mat-cell *matCellDef="let element">{{ element.userLogin }}</td>
+                  </ng-container>
+                
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                      <!-- <a [routerLink]="[element.pid]" [matTooltip]="'button.viewDetail' | translate"><mat-icon>visibility</mat-icon></a> -->
+                      <!-- <a [routerLink]="['/', element.pid, 'editing']" [matTooltip]="'button.edit' | translate"><mat-icon>edit</mat-icon></a> -->
+                    </td>
+                  </ng-container>
+                
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"  class="app-cursor-pointer" [class.app-active]="row.id === selectedVersion?.id" (click)="getVersion(row)"></tr>
+                </table>
+              </div>        
+            </div>
+          </as-split-area>
+          <as-split-area>
+            <div class="app-fxLayout app-column app-fill" *ngIf="altoObject">
+              <div class="app-toolbar app-fxLayout app-row app-center-v app-pl-2 app-pr-2">
+                <strong class="app-fxFlex">Puvodni verze objektu ({{ altoObject.version }})</strong>
+                <div>
+                  <button mat-icon-button (click)="panel0Mode = 'xml'" [class.app-active]="panel0Mode === 'xml'"><mat-icon>code</mat-icon></button>
+                  <button mat-icon-button (click)="panel0Mode = 'ocr'" [class.app-active]="panel0Mode === 'ocr'"><mat-icon>notes</mat-icon></button>
+                </div>
+              </div>
+              <div class="app-fxFlex app-oa-y">
+                <ng-container *ngIf="panel0Mode === 'xml'">
+                  <pre class="app-m-0"><code [highlight]="state.alto0Xml"  [languages]="['xml']"></code></pre>
+                </ng-container>
+                <ng-container *ngIf="panel0Mode === 'ocr'">
+                  <app-ocr-editor [printSpace]="state.printSpace0" [canEdit]="false" (setArea)="setArea($event)"></app-ocr-editor>
+                </ng-container>
+              </div>
+            </div>
+          </as-split-area>
+        </as-split>
+      </as-split-area>
+      <as-split-area >
+        <as-split direction="horizontal" (dragEnd)="asDragEndBottom($event)">
+          <as-split-area [size]="bottom_left_size" #scroller>
+            <div class="app-fxLayout app-column app-fill">
+              <div class="app-toolbar app-fxLayout app-row app-center-v app-pl-2 app-pr-2">
+                <button mat-icon-button (click)="zoomImg(1.4)"><mat-icon>zoom_in</mat-icon></button>
+                <button mat-icon-button (click)="zoomImg(.75)"><mat-icon>zoom_out</mat-icon></button>
+                <button mat-icon-button (click)="zoomImgReset()"><mat-icon>zoom_in_map</mat-icon></button>
+              </div>
+              <div class="app-fxFlex">
+                <app-viewer *ngIf="pid" [pid]="pid" [selectedAlto]="state.selectedAlto" [scroller]="scroller" [width]="viewerWidth" [imgW]="imgW"></app-viewer>
+              </div>
+            </div>
+          </as-split-area>
+          <as-split-area>
+            <div class="app-fxLayout app-column app-fill" *ngIf="state.altoXml">
+              <div class="app-toolbar app-fxLayout app-row app-center-v app-pl-2 app-pr-2">
+                <strong class="app-fxFlex">{{ state.currentObject.versionXml }} - {{ state.currentObject.userLogin }}</strong>
+                <div>  
+                  <button mat-icon-button (click)="zoom(1.1)" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_in</mat-icon></button>
+                  <button mat-icon-button (click)="zoom(.9)" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_out</mat-icon></button>
+                  <button mat-icon-button (click)="zoomReset()" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_in_map</mat-icon></button>
+                  <button mat-icon-button (click)="save()" [disabled]="panelMode !== 'ocr'"><mat-icon>save</mat-icon></button>
+                  <button mat-icon-button (click)="panelMode = 'xml'" [class.app-active]="panelMode === 'xml'"><mat-icon>code</mat-icon></button>
+                  <button mat-icon-button (click)="panelMode = 'ocr'" [class.app-active]="panelMode === 'ocr'"><mat-icon>edit_note</mat-icon></button>
+                </div>
+              </div>
+              <div class="app-fxFlex app-oa-y">
+                <ng-container *ngIf="panelMode === 'xml'">
+                  <pre class="app-m-0"><code [highlight]="state.altoXml"  [languages]="['xml']"></code></pre>
+                </ng-container>
+                <ng-container *ngIf="panelMode === 'ocr'" >
+                  <app-ocr-editor [selectedWords]="state.selectedWords" [printSpace]="state.printSpace" [printSpaceDiff]="state.printSpace0" [canEdit]="true" (setArea)="setArea($event)" [divZoom]="divZoom"></app-ocr-editor>
+                </ng-container>
+              </div>
+            </div>
+          </as-split-area>
+        </as-split>
+      </as-split-area>
+    </as-split>
+  </div>
+</div>

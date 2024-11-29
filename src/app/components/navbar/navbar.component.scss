@@ -1,0 +1,16 @@
+@import './src/sass/app-variables';
+@import './src/sass/app-mixins';
+@import './src/sass/app-global';
+
+.mat-toolbar {
+  height: $app-navbar-height;
+
+  .mdc-button {
+    @extend .app-pl-4, .app-pr-4;
+
+    &:hover, &.active {
+      color: inherit;
+      background-color: $app-navbar-active-item-color;
+    }
+  }
+}

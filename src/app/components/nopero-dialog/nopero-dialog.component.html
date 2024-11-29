@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>{{ 'desc.noPERO_dialog' | translate }}</h1>
+<div mat-dialog-content>
+    <div *ngIf="data.info.processingDateTime">{{'desc.processingDateTime' | translate}}: {{ data.info.processingDateTime | date : 'dd.MM.yyyy'}}</div>
+    <div *ngFor="let t of data.info.processingSoftware">{{'desc.' + t.name | translate}}: {{ t.elements[0].text}}</div>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-button color="primary" [matMenuTriggerFor]="menu" ><mat-icon>scanner</mat-icon>{{'button.generate' | translate}}</button>
+    <mat-menu #menu="matMenu">
+    <button mat-menu-item *ngFor="let p of data.priorities" (click)="generatePERO(p)">{{ 'desc.priority' | translate }}: {{'priority.' + p | translate}}</button>
+    </mat-menu>
+
+    <!-- <button mat-flat-button color="primary" (click)="save()">{{ 'magazines.ulozit' | translate }}</button> -->
+    <button mat-button mat-dialog-close cdkFocusInitial>{{ 'button.close' | translate }}</button>
+  </div>
