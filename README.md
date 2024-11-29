@@ -18,19 +18,14 @@ Ve složce vytvořte složku `shared`, kde budete mít všechny vlastní lokáln
 V souboru u `/shared/config.json` muzete prepisovat vychozi hodnoty konfiguracniho souboru `/assets/config.json`
 1. 
 
-1. **APP_GLOBAL.userClientBaseUrl** url uživatelského rozhraní Krameria, např. 'https://k7.inovatika.dev'
-2. **APP_GLOBAL.coreBaseUrl** url jádra Krameria, např. 'https://k7.inovatika.dev/search'
-3. **APP_GLOBAL.deployPath** cesta k aplikaci, pokud není přímo na doméně. Např. '/admin' pokud je aplikace na 'https://k7.inovatika.dev/admin'
-4. **APP_GLOBAL.keycloak** konfigurace keycloaku
-    1. **APP_GLOBAL.keycloak.baseUrl** url s instalací keycloaku
-    2. **APP_GLOBAL.keycloak.secret** secret pro keycloak
-    3. **APP_GLOBAL.keycloak.clientId** clientId pro keycloak
+1. **authBaseUrl** url s instalací keycloaku, např. 'https://k7.inovatika.dev/search/api/client/v7.0'
+4. **keycloak** konfigurace keycloaku
+    2. **loginType** 'form' |  'idp' |  'all'
 
 
 ### Příklad konfigurace
 
 ```
-
 {
   "login": "inovatika",
   "instance": "k7",
@@ -38,7 +33,7 @@ V souboru u `/shared/config.json` muzete prepisovat vychozi hodnoty konfiguracni
   "deployPath": "",
   "authBaseUrl": "https://k7.inovatika.dev/search/api/client/v7.0",
   "keycloak": {
-		"loginType": "form",
+		"loginType": 'form' |  'idp' |  'all',
 		"logoutUrl": "/login" 
   }
 
