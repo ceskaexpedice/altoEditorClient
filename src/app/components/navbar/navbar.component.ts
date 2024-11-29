@@ -9,18 +9,19 @@ import { filter, interval, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { AppConfiguration } from 'src/app/app-configuration';
 
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, 
+  imports: [CommonModule, RouterModule, TranslateModule,
     MatToolbarModule, MatButtonModule, MatIconModule, MatTooltipModule, MatMenuModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  
+
 
   tokenHours: string;
   tokenMinutes: string;
@@ -29,8 +30,9 @@ export class NavbarComponent {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    public auth: AuthService, 
-    public translator: TranslateService) { }
+    public auth: AuthService,
+    public translator: TranslateService,
+    private config: AppConfiguration) { }
 
   onLanguageChanged(lang: string) {
     //localStorage.setItem('lang', lang);
@@ -38,7 +40,8 @@ export class NavbarComponent {
   }
 
   ngOnInit(): void {
-    this.onLanguageChanged('cs');
+
+    this.onLanguageChanged(this.config.defaultLang);
 
     interval(1000).subscribe(x => {
       if (AuthService.tokenDeadline) {
@@ -48,22 +51,22 @@ export class NavbarComponent {
           return diffInMs;
         }
 
-        let diffInMs = Math.round(getDifference(new Date(), AuthService.tokenDeadline)/1000);
+        let diffInMs = Math.round(getDifference(new Date(), AuthService.tokenDeadline) / 1000);
         if (diffInMs > 0) {
-          this.tokenHours = this.padTo2Digits( Math.trunc(diffInMs / (3600)));
-          diffInMs =  diffInMs % 3600        
-          this.tokenMinutes = this.padTo2Digits( Math.trunc(diffInMs / (60)));
-          diffInMs =  diffInMs % 60        
-          this.tokenSeconds = this.padTo2Digits( diffInMs);
-          let time = this.tokenHours+":"+this.tokenMinutes+":"+this.tokenSeconds;
-          if(time === '00:02:00') {
+          this.tokenHours = this.padTo2Digits(Math.trunc(diffInMs / (3600)));
+          diffInMs = diffInMs % 3600
+          this.tokenMinutes = this.padTo2Digits(Math.trunc(diffInMs / (60)));
+          diffInMs = diffInMs % 60
+          this.tokenSeconds = this.padTo2Digits(diffInMs);
+          let time = this.tokenHours + ":" + this.tokenMinutes + ":" + this.tokenSeconds;
+          if (time === '00:02:00') {
             // this.ui.showAlertSnackBar('snackbar.alert.tokenTimeExpireInfo');
           }
         } else {
           this.tokenHours = this.padTo2Digits(0);
           this.tokenMinutes = this.padTo2Digits(0);
           this.tokenSeconds = this.padTo2Digits(0);
-          window.location.href='/login';
+          window.location.href = '/login';
         }
       } else {
         this.tokenHours = null;
