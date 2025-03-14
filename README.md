@@ -61,13 +61,13 @@ RewriteRule ^(.+)$ - [S=1]
 RewriteRule ^(.+)$ /index.html
 ```
 
-Nastaveni redirektu dotazu z klienta na api server
+Klient posila vsechny dotazy na backend jako /api/*. Proto je nutne pridat nastaveni redirektu dotazu z klienta na api server
 ```
 <IfModule mod_proxy.c>
       ProxyPass /api http://127.0.0.1:8081/altoEditor
       ProxyPassReverse /api http://127.0.0.1:8081/altoEditor
       ProxyPassReverseCookiePath /altoEditor /api
-    </IfModule>
+</IfModule>
 ```
 
 ### Nginx
