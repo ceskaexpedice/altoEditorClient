@@ -61,11 +61,11 @@ RewriteRule ^(.+)$ - [S=1]
 RewriteRule ^(.+)$ /index.html
 ```
 
-Klient posila vsechny dotazy na backend jako /api/*. Proto je nutne pridat nastaveni redirektu dotazu z klienta na api server
+Klient posila vsechny dotazy na backend jako /api/*. Proto je nutne pridat nastaveni redirektu dotazu z klienta na api server (tady http://127.0.0.1:8080/altoEditor)
 ```
 <IfModule mod_proxy.c>
-      ProxyPass /api http://127.0.0.1:8081/altoEditor
-      ProxyPassReverse /api http://127.0.0.1:8081/altoEditor
+      ProxyPass /api http://127.0.0.1:8080/altoEditor
+      ProxyPassReverse /api http://127.0.0.1:8080/altoEditor
       ProxyPassReverseCookiePath /altoEditor /api
 </IfModule>
 ```
