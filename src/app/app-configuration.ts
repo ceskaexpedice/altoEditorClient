@@ -2,7 +2,6 @@ import { EventEmitter, Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, switchMap, tap } from 'rxjs';
 import { Configuration } from './shared/config';
-import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -64,6 +63,10 @@ import { isPlatformBrowser } from '@angular/common';
     
     public get deployPath() {
         return this.config.deployPath;
+    }
+
+    public get clientBaseUrl() {
+        return this.config.clientBaseUrl;
     }
 
     public get authBaseUrl() {

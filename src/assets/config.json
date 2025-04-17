@@ -3,6 +3,7 @@
   "instance": "k7",
   "defaultLang": "cs",
   "deployPath": "",
+  "clientBaseUrl": "https://altoeditor.inovatika.dev/api",
   "authBaseUrl": "https://k7.inovatika.dev/search/api/client/v7.0",
   "keycloak": {
 		"loginType": "form",

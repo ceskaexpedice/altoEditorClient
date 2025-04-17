@@ -3,8 +3,10 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { DomSanitizer } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppConfiguration } from 'src/app/app-configuration';
+import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
 import { XmlJsElement } from 'src/app/shared/xml-js-element';
 
@@ -18,7 +20,12 @@ import { XmlJsElement } from 'src/app/shared/xml-js-element';
 export class ViewerComponent {
   @ViewChild('scrollerN') scrollerN: ElementRef;
   @Input() scroller: HTMLElement
-  @Input() pid: string = '';
+
+
+  @Input() set pid(pid: string){
+      this.getImg(pid);
+    
+  };
 
   @Input() set width(value: number){
     if (this.canvasInited) {
@@ -79,7 +86,10 @@ export class ViewerComponent {
 
   canvasInited = false;
 
-  constructor(public config: AppConfiguration){}
+  constructor(public config: AppConfiguration,
+    private sanitizer: DomSanitizer,
+    private service: AppService
+  ){}
 
   ngOnInit() {
 
@@ -87,6 +97,19 @@ export class ViewerComponent {
 
   ngAfterViewInit() {
     this.scroller = this.scrollerN.nativeElement;
+  }
+
+  imageUrl: any;
+  getImg(pid: string) {
+    if (!pid) {
+      return;
+    }
+    this.service.getImge(pid, this.config.login, this.config.instance).subscribe((resp: any) => {
+      const img = this.image.nativeElement as HTMLImageElement;
+      const b = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(resp))
+      // img.src="data:"+mimetype+";base64,"+b64encoded;
+      this.imageUrl=b;
+    })
   }
 
   getInfo() {

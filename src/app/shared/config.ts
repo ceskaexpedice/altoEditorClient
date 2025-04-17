@@ -7,6 +7,7 @@ export class Configuration {
   login: string;
   instance: string;
   deployPath: string;
+  clientBaseUrl: string;
   authBaseUrl: string;
   keycloak: {
 		loginType: string;

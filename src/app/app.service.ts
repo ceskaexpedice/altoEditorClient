@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppConfiguration } from './app-configuration';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,11 @@ export class AppService {
   constructor(
     private http: HttpClient,
     private translateService: TranslateService,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private config: AppConfiguration
+  ) {
+
+     }
 
   showSnackBar(s: string, error: boolean = false) {
     const clazz = error ? 'app-snack-error' : 'app-snack-success';
@@ -27,6 +32,7 @@ export class AppService {
   private get<T>(url: string, params: HttpParams = new HttpParams(), responseType?: any): Observable<T> {
     // const r = re ? re : 'json';
     const options = { params, responseType, withCredentials: true };
+    // return this.http.get<T>(`${this.config.clientBaseUrl}${url}`, options);
     return this.http.get<T>(`api${url}`, options);
 
   }
@@ -75,12 +81,12 @@ export class AppService {
     
   }
   
-  getImge(pid: string, login: string, instance: string): Observable<string> {
+  getImge(pid: string, login: string, instance: string): Observable<any> {
     const params: HttpParams = new HttpParams()
     .set('pid', pid)
     .set('instance', instance)
     .set('login', login);
-    return this.get(`/object/image`, params);
+    return this.get(`/object/image`, params, 'blob');
     
   }
 

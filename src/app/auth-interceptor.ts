@@ -12,7 +12,8 @@ export class AuthInterceptor implements HttpInterceptor {
     ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (request.url.startsWith('assets') || (!request.url.startsWith(this.appSettings.authBaseUrl) && !request.url.startsWith('api'))) {
+    if (!this.appSettings.config || request.url.startsWith('assets') || 
+        (!request.url.startsWith('api') && !request.url.startsWith(this.appSettings.authBaseUrl) && !request.url.startsWith(this.appSettings.clientBaseUrl))) {
       return next.handle(request);
     }
     const token = AuthService.token;
