@@ -20,7 +20,8 @@
     "saveChangesToProarc": "Uložit změny do ProArcu",
     "PERO": "Vygenerovat novou textovou vrstvu pomoci PERO",
     "generate": "Vygenerovat",
-    "logIn": "Přihlásit se"
+    "logIn": "Přihlásit se",
+    "delete_selected_batches": "Smazat vybrané procesy"
   },
   "desc": {
     "id": "Id",

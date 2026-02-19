@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -20,6 +20,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { HttpParams } from '@angular/common/http';
 import { BATCH_PRIORITIES, BATCH_STATES, DO_STATES } from 'src/app/shared/constants';
 import { PaginatorI18n } from 'src/app/shared/paginator-i18n';
+import { SimpleDialogData } from 'src/app/components/simple-dialog/simple-dialog';
+import { SimpleDialogComponent } from 'src/app/components/simple-dialog/simple-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 const today = new Date();
 const month = today.getMonth();
@@ -33,7 +36,7 @@ const year = today.getFullYear();
   ],
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule, MatSelectModule, 
-    MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatInputModule,
+    MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, MatDialogModule,
     MatIconModule, TranslateModule, MatTableModule, MatTooltipModule, MatSortModule, MatPaginatorModule, MatButtonModule],
   templateUrl: './process-management.component.html',
   styleUrls: ['./process-management.component.scss']
@@ -61,9 +64,16 @@ export class ProcessManagementComponent {
   createDate = new FormControl();
   updateDate = new FormControl();
 
+  selectedItem: Batch;
+  startShiftClickIdx: number;
+  lastClickIdx: number;
+  totalSelected: number = 0;
+
   constructor(
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
+    private translator: TranslateService,
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private config: AppConfiguration,
     private service: AppService) { }
@@ -99,6 +109,41 @@ export class ProcessManagementComponent {
     });
   }
 
+  onDeleteBatches() {
+
+    const title = 'button.delete_selected_batches';
+    const data: SimpleDialogData = {
+      title: String(this.translator.instant(title)),
+      message: String(this.translator.instant('Opravdu chcete smazat procesy?')),
+      alertClass: 'app-message',
+      btn1: {
+        label: 'Ano',
+        value: 'yes',
+        color: 'warn'
+      },
+      btn2: {
+        label: 'Ne',
+        value: 'no',
+        color: 'default'
+      }
+    };
+    const dialogRef = this.dialog.open(SimpleDialogComponent, {
+      data: data
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'yes') {
+        this.deleteBatches();
+      }
+    });
+
+  }
+  
+  deleteBatches() {
+    const params: any = {};
+    params.id = this.batches.filter(b => b.selected).map(b => b.id);
+    this.service.deleteBatches(params)
+  }
+
   onSortChange(e: any) {
     console.log(e);
     this.sortBy = e.active ?  e.active : 'updateDate';
@@ -131,6 +176,40 @@ export class ProcessManagementComponent {
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
     this.getBatches();
+  }
+
+  select(item: Batch, idx: number, event: MouseEvent) {
+    if (event && (event.metaKey || event.ctrlKey)) {
+      item.selected = !item.selected;
+      this.startShiftClickIdx = idx;
+    } else if (event && event.shiftKey) {
+      if (this.startShiftClickIdx > -1) {
+        const oldFrom = Math.min(this.startShiftClickIdx, this.lastClickIdx);
+        const oldTo = Math.max(this.startShiftClickIdx, this.lastClickIdx);
+        for (let i = oldFrom; i <= oldTo; i++) {
+          this.batches[i].selected = false;
+        }
+        const from = Math.min(this.startShiftClickIdx, idx);
+        const to = Math.max(this.startShiftClickIdx, idx);
+        for (let i = from; i <= to; i++) {
+          this.batches[i].selected = true;
+        }
+      } else {
+        // nic neni.
+        this.batches.forEach(i => i.selected = false);
+        item.selected = true;
+        this.startShiftClickIdx = idx;
+      }
+      window.getSelection().empty();
+    } else {
+      this.batches.forEach(i => i.selected = false);
+      item.selected = true;
+      this.startShiftClickIdx = idx;
+    }
+
+    this.lastClickIdx = idx;
+    this.totalSelected = this.batches.filter(i => i.selected).length;
+    this.selectedItem = item;
   }
 
 }

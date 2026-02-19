@@ -82,7 +82,8 @@ export class EditingComponent implements OnInit {
         this.parseXML(res.data)
       });
     } else {
-      this.service.getAlto(this.pid, this.config.login, this.config.instance).subscribe((res: any) => {
+      const instance = this.route.snapshot.queryParams['instance']  ? this.route.snapshot.queryParams['instance'] : this.config.instance;
+      this.service.getAlto(this.pid, this.config.login,  instance).subscribe((res: any) => {
         this.parseXML(res.data)
       });
     }

@@ -20,7 +20,8 @@
     "saveChangesToProarc": "Save changes to ProArc",
     "PERO": "Create new text layer using PERO",
     "generate": "Create",
-    "logIn": "Login"
+    "logIn": "Login",
+    "delete_selected_batches": "Delete selected processes"
   },
   "desc": {
     "id": "Id",

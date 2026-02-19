@@ -41,6 +41,10 @@ export class AppService {
     return this.http.post<any>(`api${url}`, obj);
   }
 
+  private delete(url: string, params = {}): Observable<Object> {
+    return this.http.delete(encodeURI(`api${url}`), { params: params });
+  }
+
   getUsers(): Observable<string> {
     return this.get(`/db/users`);
   }
@@ -84,8 +88,7 @@ export class AppService {
   getImge(pid: string, login: string, instance: string): Observable<any> {
     const params: HttpParams = new HttpParams()
     .set('pid', pid)
-    .set('instance', instance)
-    .set('login', login);
+    .set('instance', instance);
     return this.get(`/object/image`, params, 'blob');
     
   }
@@ -93,8 +96,7 @@ export class AppService {
   getAlto(pid: string, login: string, instance: string): Observable<string> {
     const params: HttpParams = new HttpParams()
     .set('pid', pid)
-    .set('instance', instance)
-    .set('login', login);
+    .set('instance', instance);
     return this.get(`/object/alto`, params);
     
   }
@@ -102,8 +104,7 @@ export class AppService {
   getAltoOriginal(pid: string, login: string, instance: string): Observable<string> {
     const params: HttpParams = new HttpParams()
     .set('pid', pid)
-    .set('instance', instance)
-    .set('login', login);
+    .set('instance', instance);
     return this.get(`/object/altoOriginal`, params);
     
   }
@@ -112,14 +113,17 @@ export class AppService {
     const params: HttpParams = new HttpParams()
     .set('pid', pid)
     .set('versionXml', versionXml)
-    .set('instance', instance)
-    .set('login', login);
+    .set('instance', instance);
     return this.get(`/object/alto`, params);
     
   }
 
   getBatches(params: HttpParams): Observable<string> {
     return this.get(`/db/batches`, params);  
+  }
+
+  deleteBatches(params: any): Observable<any> {
+    return this.delete('db/batches', params);
   }
 
   saveAlto(data: any) {
