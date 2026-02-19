@@ -48,6 +48,8 @@
     "markSuccess": "Mark success",
     "noPERO_dialog": "Create new text layer using PERO",
     "version": "Version",
+    "version0": "Original version",
+    "versionPero": "Generated version by PERO",
     "connectedInstance": "Connected instance"
   },
   "state": {

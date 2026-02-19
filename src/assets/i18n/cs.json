@@ -48,6 +48,8 @@
     "markSuccess": "Označit úspěšně proběhlo",
     "noPERO_dialog": "Vygenerovat novou textovou vrstvu pomoci PERO",
     "version": "Verze",
+    "version0": "Původní verze objektu",
+    "versionPero": "Vygenerovaná verze pomocí PERO",
     "connectedInstance": "Připojená instance"
   },
   "state": {

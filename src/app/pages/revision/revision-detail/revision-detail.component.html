@@ -70,7 +70,7 @@
           <as-split-area>
             <div class="app-fxLayout app-column app-fill" *ngIf="altoObject">
               <div class="app-toolbar app-fxLayout app-row app-center-v app-pl-2 app-pr-2">
-                <strong class="app-fxFlex">Puvodni verze objektu ({{ altoObject.version }})</strong>
+                <strong class="app-fxFlex">{{ (altoObject.version === '0' ? 'desc.version0' : 'desc.versionPero') | translate}} ({{ altoObject.version }})</strong>
                 <div>
                   <button mat-icon-button (click)="panel0Mode = 'xml'" [class.app-active]="panel0Mode === 'xml'"><mat-icon>code</mat-icon></button>
                   <button mat-icon-button (click)="panel0Mode = 'ocr'" [class.app-active]="panel0Mode === 'ocr'"><mat-icon>notes</mat-icon></button>
