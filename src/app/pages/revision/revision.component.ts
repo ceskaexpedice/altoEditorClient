@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AngularSplitModule } from 'angular-split';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,6 +20,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { DO_STATES } from 'src/app/shared/constants';
 import { PaginatorI18n } from 'src/app/shared/paginator-i18n';
+import { SimpleDialogData } from 'src/app/components/simple-dialog/simple-dialog';
+import { SimpleDialogComponent } from 'src/app/components/simple-dialog/simple-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DeleteMultipleDialogComponent } from 'src/app/components/delete-multiple-dialog/delete-multiple-dialog.component';
 
 @Component({
   selector: 'app-revision',
@@ -30,7 +34,7 @@ import { PaginatorI18n } from 'src/app/shared/paginator-i18n';
   ],
   imports: [CommonModule, TranslateModule, RouterModule, MatSortModule, FormsModule, ReactiveFormsModule,
     AngularSplitModule, MatIconModule, MatButtonModule, MatTableModule, MatFormFieldModule,
-    MatSelectModule, MatInputModule,
+    MatSelectModule, MatInputModule, MatDialogModule,
     MatTooltipModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule],
   templateUrl: './revision.component.html',
   styleUrls: ['./revision.component.scss']
@@ -59,10 +63,17 @@ export class RevisionComponent {
   totalRows: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
+  
+  selectedItem: any;
+  startShiftClickIdx: number;
+  lastClickIdx: number;
+  totalSelected: number = 0;
 
   constructor(
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
+        private translator: TranslateService,
+        private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
     private config: AppConfiguration,
@@ -107,6 +118,56 @@ export class RevisionComponent {
     });
   }
 
+  onDeleteRevisions() {
+  
+      const title = 'button.delete_selected_revisions';
+      const data: SimpleDialogData = {
+        title: String(this.translator.instant(title)),
+        message: String(this.translator.instant('Opravdu chcete smazat revize?')),
+        alertClass: 'app-message',
+        btn1: {
+          label: 'Ano',
+          value: 'yes',
+          color: 'warn'
+        },
+        btn2: {
+          label: 'Ne',
+          value: 'no',
+          color: 'default'
+        }
+      };
+      const dialogRef = this.dialog.open(SimpleDialogComponent, {
+        data: data
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'yes') {
+          this.deleteRevisions();
+        }
+      });
+  
+    }
+    
+    deleteRevisions() {
+      const params: any = {};
+      params.id = this.revisions.filter(b => b.selected).map(b => b.id);
+      this.service.deleteObjects(params)
+    }
+    
+    deleteDO() {
+
+      const dialogRef = this.dialog.open(DeleteMultipleDialogComponent, {
+        
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const params: any = {};
+          params.pid = result.pids;
+          this.service.deleteObjects(params)
+        }
+      });
+
+    }
+
   onSortChange(e: any) {
     console.log(e);
     this.sortBy = e.active ? e.active : 'datum';
@@ -147,5 +208,39 @@ export class RevisionComponent {
     this.pageIndex = e.pageIndex;
     this.getDOs();
   }
+
+  select(item: any, idx: number, event: MouseEvent) {
+      if (event && (event.metaKey || event.ctrlKey)) {
+        item.selected = !item.selected;
+        this.startShiftClickIdx = idx;
+      } else if (event && event.shiftKey) {
+        if (this.startShiftClickIdx > -1) {
+          const oldFrom = Math.min(this.startShiftClickIdx, this.lastClickIdx);
+          const oldTo = Math.max(this.startShiftClickIdx, this.lastClickIdx);
+          for (let i = oldFrom; i <= oldTo; i++) {
+            this.revisions[i].selected = false;
+          }
+          const from = Math.min(this.startShiftClickIdx, idx);
+          const to = Math.max(this.startShiftClickIdx, idx);
+          for (let i = from; i <= to; i++) {
+            this.revisions[i].selected = true;
+          }
+        } else {
+          // nic neni.
+          this.revisions.forEach(i => i.selected = false);
+          item.selected = true;
+          this.startShiftClickIdx = idx;
+        }
+        window.getSelection().empty();
+      } else {
+        this.revisions.forEach(i => i.selected = false);
+        item.selected = true;
+        this.startShiftClickIdx = idx;
+      }
+  
+      this.lastClickIdx = idx;
+      this.totalSelected = this.revisions.filter(i => i.selected).length;
+      this.selectedItem = item;
+    }
 
 }

@@ -21,7 +21,9 @@
     "PERO": "Vygenerovat novou textovou vrstvu pomoci PERO",
     "generate": "Vygenerovat",
     "logIn": "Přihlásit se",
-    "delete_selected_batches": "Smazat vybrané procesy"
+    "delete_selected_batches": "Smazat vybrané procesy",
+    "deleteMultiple": "Hromadné mazání",
+    "delete": "Smazat"
   },
   "desc": {
     "id": "Id",

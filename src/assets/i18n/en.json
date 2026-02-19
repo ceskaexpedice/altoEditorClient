@@ -21,7 +21,9 @@
     "PERO": "Create new text layer using PERO",
     "generate": "Create",
     "logIn": "Login",
-    "delete_selected_batches": "Delete selected processes"
+    "delete_selected_batches": "Delete selected processes",
+    "deleteMultiple": "Delete multiple",
+    "delete": "Delete"
   },
   "desc": {
     "id": "Id",

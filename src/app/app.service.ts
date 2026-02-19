@@ -126,6 +126,10 @@ export class AppService {
     return this.delete('db/batches', params);
   }
 
+  deleteObjects(params: HttpParams): Observable<string> {
+    return this.get(`/db/objects`, params);  
+  }
+
   saveAlto(data: any) {
     const url = `/object/alto`;
     return this.post(url, data);
