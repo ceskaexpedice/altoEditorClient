@@ -41,7 +41,7 @@
               <button mat-icon-button (click)="zoom(1.1)" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_in</mat-icon></button>
               <button mat-icon-button (click)="zoom(.9)" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_out</mat-icon></button>
               <button mat-icon-button (click)="zoomReset()" [disabled]="panelMode !== 'ocr'"><mat-icon>zoom_in_map</mat-icon></button>
-              <button mat-icon-button (click)="save()" [disabled]="panelMode !== 'ocr'"><mat-icon>save</mat-icon></button>
+              <button mat-icon-button (click)="save()" [disabled]="panelMode !== 'ocr' || !hasChanges"><mat-icon>save</mat-icon></button>
               <button mat-icon-button (click)="panelMode = 'xml'" [class.app-active]="panelMode === 'xml'"><mat-icon>code</mat-icon></button>
               <button mat-icon-button (click)="panelMode = 'ocr'" [class.app-active]="panelMode === 'ocr'"><mat-icon>edit_note</mat-icon></button>
               <button mat-icon-button *ngIf="!state.currentObject" [matMenuTriggerFor]="menu" [matTooltip]="'button.PERO' | translate"><mat-icon>scanner</mat-icon></button>
@@ -55,7 +55,7 @@
               <pre class="app-m-0"><code [highlight]="state.altoXml"  [languages]="['xml']"></code></pre>
             </ng-container>
             <ng-container *ngIf="panelMode === 'ocr'" >
-              <app-ocr-editor [selectedWords]="state.selectedWords" [printSpace]="state.printSpace" [printSpaceDiff]="state.printSpace0" [canEdit]="true" (setArea)="setArea($event)" [divZoom]="divZoom"></app-ocr-editor>
+              <app-ocr-editor [selectedWords]="state.selectedWords" [printSpace]="state.printSpace" [printSpaceDiff]="state.printSpace0" [canEdit]="true" (setArea)="setArea($event)" [divZoom]="divZoom"  (onChanged)="ocrChanged($event)"></app-ocr-editor>
             </ng-container>
           </div>
         </div>

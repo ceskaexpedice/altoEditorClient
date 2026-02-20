@@ -48,6 +48,7 @@ export class EditingComponent implements OnInit {
   panelMode = 'ocr';
   divZoom = 1;
   imgW = 100;
+  hasChanges: boolean;
 
 
   constructor(
@@ -84,6 +85,8 @@ export class EditingComponent implements OnInit {
     } else {
       const instance = this.route.snapshot.queryParams['instance']  ? this.route.snapshot.queryParams['instance'] : this.config.instance;
       this.service.getAlto(this.pid, this.config.login,  instance).subscribe((res: any) => {
+        const model = res.model;
+        const versionState = res.versionState;
         this.parseXML(res.data)
       });
     }
@@ -205,15 +208,20 @@ export class EditingComponent implements OnInit {
     this.state.selectedAlto = { blocks: this.state.selectedBlocks, lines: this.state.selectedLines, words: this.state.selectedWords };
   }
 
+  ocrChanged(changed: boolean) {
+    this.hasChanges = changed;
+  }
+
   save() {
     // const builder = new Builder({'rootName' :'alto' });
     // const xml = builder.buildObject(this.alto);
 
     const xml = js2xml(this.state.alto);
+    const instance = this.route.snapshot.queryParams['instance']  ? this.route.snapshot.queryParams['instance'] : this.config.instance;
     const data = {
       pid: this.pid,
       login: this.config.login,
-      instance: this.config.instance,
+      instance: instance,
       data: xml
     }
     this.service.saveAlto(data).subscribe(res => {
@@ -229,6 +237,7 @@ export class EditingComponent implements OnInit {
 
   generatePERO(priority: string) {
     //{"pid":"{{uuidStrana}}","priority":"LOW", "instance":"k7"}
+    
     const data = {
       pid: this.pid,
       priority: priority,
