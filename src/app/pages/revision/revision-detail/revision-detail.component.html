@@ -8,6 +8,8 @@
       <span class="app-last">{{ state.currentObject?.parentLabel }} - {{ state.currentObject?.label }}</span>
     </div>
     <div class="app-h-100">
+      <button mat-icon-button (click)="gotoPrev()" [disabled]="!previousPid" [matTooltip]="'button.gotoPrev' | translate" ><mat-icon>keyboard_arrow_left</mat-icon></button>
+      <button mat-icon-button (click)="gotoNext()" [disabled]="!nextPid" [matTooltip]="'button.gotoNext' | translate" ><mat-icon>keyboard_arrow_right</mat-icon></button>
       <button mat-button (click)="markAsMajorVersion()" [disabled]="!selectedVersion">{{ 'button.markAsMajorVersion' | translate }}</button>
       <button mat-button (click)="markForDeletion()" [disabled]="!selectedVersion">{{ 'button.markForDeletion' | translate }}</button>
       <button mat-button (click)="gotoObject()" [disabled]="!selectedVersion">{{ 'button.editTheGivenVersion' | translate }}</button>

@@ -46,6 +46,9 @@ export class RevisionDetailComponent {
   top_left_size = 50;
   bottom_left_size = 50;
 
+  previousPid: string;
+  nextPid: string;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -67,6 +70,7 @@ export class RevisionDetailComponent {
       this.pid = params['pid'];
       this.getVersions();
       this.getAltoOrig();
+      this.getSiblings();
     });
   }
 
@@ -90,8 +94,19 @@ export class RevisionDetailComponent {
       const v = this.versions.find((version: Version) => version.userLogin === this.config.login);
       if (v) {
         this.getVersion(v);
+      } else {
+        this.getVersion(this.versions[0]);
       }
     });
+  }
+
+  getSiblings() {
+      this.previousPid = null;
+      this.nextPid = null;
+      this.service.getSiblings(this.pid, this.config.instance).subscribe((res: any) => {
+        this.previousPid = res.previousPid;
+        this.nextPid = res.nextPid;
+      });
   }
 
   getAltoOrig() {
@@ -114,6 +129,14 @@ export class RevisionDetailComponent {
       this.state.alto = xml2js(this.state.altoXml);
       this.state.printSpace = this.state.setPrintSpace(this.state.alto);
     });
+  }
+
+  gotoPrev() {
+    this.router.navigate(['/revision', this.previousPid]);
+  }
+
+  gotoNext() {
+    this.router.navigate(['/revision', this.nextPid]);
   }
 
   markAsMajorVersion() {

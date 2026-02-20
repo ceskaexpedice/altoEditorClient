@@ -24,6 +24,7 @@ import { SimpleDialogData } from 'src/app/components/simple-dialog/simple-dialog
 import { SimpleDialogComponent } from 'src/app/components/simple-dialog/simple-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteMultipleDialogComponent } from 'src/app/components/delete-multiple-dialog/delete-multiple-dialog.component';
+import { AppState } from 'src/app/shared/app.state';
 
 @Component({
   selector: 'app-revision',
@@ -78,6 +79,7 @@ export class RevisionComponent {
     private router: Router,
     private route: ActivatedRoute,
     private config: AppConfiguration,
+    private state: AppState,
     private service: AppService) { }
 
   ngOnInit() {
@@ -176,8 +178,9 @@ export class RevisionComponent {
     this.getDOs();
   }
 
-  navigate(pid: string) {
-    this.router.navigate([pid], { relativeTo: this.route });
+  navigate(o: any) {
+    this.state.currentObject = o;
+    this.router.navigate([o.pid], { relativeTo: this.route });
   }
 
 

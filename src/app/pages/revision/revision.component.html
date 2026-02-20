@@ -20,7 +20,7 @@
         </ng-container>
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>{{ 'desc.id' | translate }}</th>
-          <td mat-cell *matCellDef="let element"><a  (click)="navigate(element.pid)">{{ element.id }}</a>/td>
+          <td mat-cell *matCellDef="let element">{{ element.id }}/td>
         </ng-container>
       
       
@@ -34,7 +34,7 @@
         </ng-container>
         <ng-container matColumnDef="parentLabel">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'desc.parentLabel' | translate }}</th>
-          <td mat-cell *matCellDef="let element">{{ element.parentLabel }}</td>
+          <td mat-cell *matCellDef="let element"><a  (click)="navigate(element)">{{ element.parentLabel }}</a></td>
         </ng-container>
       
       
@@ -119,7 +119,7 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <a [routerLink]="[element.pid]" [matTooltip]="'button.viewDetail' | translate"><mat-icon>visibility</mat-icon></a>
+            <a (click)="navigate(element)" [matTooltip]="'button.viewDetail' | translate"><mat-icon>visibility</mat-icon></a>
           </td>
         </ng-container>
       

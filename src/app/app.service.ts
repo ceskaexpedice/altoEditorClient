@@ -78,6 +78,14 @@ export class AppService {
     
   }
 
+  getSiblings(pid: string, instance: string) {
+    const params: HttpParams = new HttpParams()
+    .set('pid', pid)
+    .set('instance', instance);
+    return this.get(`/object/siblings`, params);
+    
+  }
+
   getVersions(pid: string, login: string, instance: string, filterField?: string, filterValue?: string): Observable<string> {
     const params: HttpParams = new HttpParams()
     .set('pid', pid);
