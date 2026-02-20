@@ -13,7 +13,7 @@
   <div class="app-content-wrapper app-fxFlex app-oh">
     <div class="app-oa-y app-h-100 app-border-wrapper">
       <table mat-table [dataSource]="revisions" class="app-w-100 app-striped app-hover"
-        matSort (matSortChange)="onSortChange($event)">
+        matSort (matSortChange)="onSortChange($event)" >
         
         <ng-container matColumnDef="id-filter">
           <th mat-header-cell *matHeaderCellDef></th>
@@ -21,6 +21,20 @@
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>{{ 'desc.id' | translate }}</th>
           <td mat-cell *matCellDef="let element"><a  (click)="navigate(element.pid)">{{ element.id }}</a>/td>
+        </ng-container>
+      
+      
+        <ng-container matColumnDef="parentLabel-filter">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-form-field >
+              <input matInput type="text" id="parentLabelFilter" [(ngModel)]="parentLabelFilter" (change)="filter('parentLabel', parentLabelFilter)" [placeholder]="'desc.filterByParentLabel' | translate">
+              <button mat-icon-button matIconSuffix color="warn" *ngIf="parentLabelFilter" (click)="filter('parentLabel', ''); parentLabelFilter = ''"><mat-icon>clear</mat-icon></button>
+            </mat-form-field>
+           </th>
+        </ng-container>
+        <ng-container matColumnDef="parentLabel">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'desc.parentLabel' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.parentLabel }}</td>
         </ng-container>
       
       
@@ -34,7 +48,7 @@
         </ng-container>
         <ng-container matColumnDef="label">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'desc.label' | translate }}</th>
-          <td mat-cell *matCellDef="let element">{{ element.parentLabel }} - {{ element.label }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.label }}</td>
         </ng-container>
   
         <ng-container matColumnDef="datum-filter">

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,7 +9,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { AppService } from 'src/app/app.service';
-import { MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortable, MatSortModule } from '@angular/material/sort';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpParams } from '@angular/common/http';
@@ -40,11 +40,12 @@ import { DeleteMultipleDialogComponent } from 'src/app/components/delete-multipl
   styleUrls: ['./revision.component.scss']
 })
 export class RevisionComponent {
-  displayedColumns: string[] = ['label', 'datum', 'state', 'pid', 'userLogin', 'actions'];
+  displayedColumns: string[] = ['parentLabel', 'label', 'datum', 'state', 'pid', 'userLogin', 'actions'];
   filterColumns: string[] = [];
-
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   pidFilter: string;
+  parentLabelFilter: string;
   labelFilter: string;
   states: string[] = [];
   stateFilter: string = '';
@@ -59,7 +60,7 @@ export class RevisionComponent {
   pid: string;
   revisions: any[] = [];
   sortBy: string = 'datum';
-  orderSort: string = 'asc';
+  orderSort: string = 'desc';
   totalRows: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
@@ -82,6 +83,7 @@ export class RevisionComponent {
   ngOnInit() {
     this._locale = 'cs';
     this._adapter.setLocale(this._locale);
+    this.sort.sort(({ id: this.sortBy, start: this.orderSort}) as MatSortable);
     this.displayedColumns.forEach(c => {
       this.filterColumns.push(c + '-filter');
     });
@@ -169,7 +171,6 @@ export class RevisionComponent {
     }
 
   onSortChange(e: any) {
-    console.log(e);
     this.sortBy = e.active ? e.active : 'datum';
     this.orderSort = e.direction ? e.direction : 'asc';
     this.getDOs();
