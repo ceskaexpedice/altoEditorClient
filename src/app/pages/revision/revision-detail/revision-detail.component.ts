@@ -225,6 +225,8 @@ export class RevisionDetailComponent {
         this.state.altoXml = Utils.prettifyXml(res.data);
         this.state.alto = xml2js(this.state.altoXml);
         this.state.printSpace = this.state.setPrintSpace(this.state.alto);
+        
+        this.getVersions();
       }
     })
   }

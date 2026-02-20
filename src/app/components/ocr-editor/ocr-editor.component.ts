@@ -49,16 +49,18 @@ export class OcrEditorComponent {
     this.diffs = {};
     if (this._printSpaceDiff) {
       this._printSpace.elements.forEach((tb: XmlJsElement) => {
-        tb.elements.forEach((line: XmlJsElement, idx: number) => {
-          line.idx = idx;
-          line.elements.forEach((word: XmlJsElement, widx: number) => {
-            const d = Utils.getElementByPos(this._printSpaceDiff, word.attributes['HPOS'], word.attributes['VPOS']);
-            if (d && d.attributes['CONTENT'] !== word.attributes['CONTENT']) {
-              const key = word.attributes['HPOS'] + '-' +  word.attributes['VPOS']
-              this.diffs[key] = d.attributes['CONTENT'];
-            }
+        if (tb.elements){
+          tb.elements.forEach((line: XmlJsElement, idx: number) => {
+            line.idx = idx;
+            line.elements.forEach((word: XmlJsElement, widx: number) => {
+              const d = Utils.getElementByPos(this._printSpaceDiff, word.attributes['HPOS'], word.attributes['VPOS']);
+              if (d && d.attributes['CONTENT'] !== word.attributes['CONTENT']) {
+                const key = word.attributes['HPOS'] + '-' +  word.attributes['VPOS']
+                this.diffs[key] = d.attributes['CONTENT'];
+              }
+            });
           });
-        });
+        }
       });
     }
   }
