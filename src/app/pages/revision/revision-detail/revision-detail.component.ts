@@ -35,6 +35,7 @@ export class RevisionDetailComponent {
   panel0Mode = 'ocr';
   panelMode = 'ocr';
   viewerWidth: number;
+  hasChanges: boolean;
 
   displayedColumns: string[] = ['date', 'state', 'version', 'user', 'actions'];
   versions: Version[] = [];
@@ -205,6 +206,10 @@ export class RevisionDetailComponent {
   splitChanged(e: any) {
     this.viewerWidth = e.sizes[0];
     // console.log(getVisibleAreaSizes())
+  }
+
+  ocrChanged(changed: boolean) {
+    this.hasChanges = changed;
   }
 
   save() {

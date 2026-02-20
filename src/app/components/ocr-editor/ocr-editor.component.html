@@ -15,7 +15,7 @@
                 <input *ngIf="selectedWords.length > 0 && canEdit &&
                 w.attributes['HPOS'] === selectedWords[0].attributes['HPOS'] && 
                 w.attributes['VPOS'] === selectedWords[0].attributes['VPOS']"
-                  [style.width]="(w.attributes['CONTENT'].toString().length + 1) + 'ch'" [(ngModel)]="w.attributes['CONTENT']" />
+                  [style.width]="(w.attributes['CONTENT'].toString().length + 1) + 'ch'" [(ngModel)]="w.attributes['CONTENT']" (ngModelChange)="checkChanged()" />
               </ng-container>
               <ng-container *ngIf="w.name === 'SP'">&#160;</ng-container>
             </ng-container>

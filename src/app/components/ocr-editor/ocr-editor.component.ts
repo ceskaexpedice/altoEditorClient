@@ -22,10 +22,13 @@ export class OcrEditorComponent {
   @Input() selectedWords: XmlJsElement[] = [];
   @Output() setArea = new EventEmitter<any>();
   @Input() divZoom = 1;
+  @Output() onChanged = new EventEmitter<boolean>();
 
   _printSpace: XmlJsElement;
+  _printSpaceOriginal: XmlJsElement;
   @Input() set printSpace(value: XmlJsElement) {
     this._printSpace = value;
+    this._printSpaceOriginal = JSON.parse(JSON.stringify(value));
     this.checkDiffs();
   }
   
@@ -63,5 +66,24 @@ export class OcrEditorComponent {
         }
       });
     }
+  }
+
+  checkChanged() {
+    let diffs = false;
+      this._printSpace.elements.forEach((tb: XmlJsElement) => {
+        if (tb.elements){
+          tb.elements.forEach((line: XmlJsElement, idx: number) => {
+            line.idx = idx;
+            line.elements.forEach((word: XmlJsElement, widx: number) => {
+              const d = Utils.getElementByPos(this._printSpaceOriginal, word.attributes['HPOS'], word.attributes['VPOS']);
+              if (d && d.attributes['CONTENT'] !== word.attributes['CONTENT']) {
+                const key = word.attributes['HPOS'] + '-' +  word.attributes['VPOS']
+                diffs = true;
+              }
+            });
+          });
+        }
+      });
+    this.onChanged.emit(diffs) ;
   }
 }
