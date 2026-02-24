@@ -134,8 +134,8 @@ export class AppService {
     return this.delete('db/batches', params);
   }
 
-  deleteObjects(params: HttpParams): Observable<string> {
-    return this.get(`/db/objects`, params);  
+  deleteObjects(params: HttpParams): Observable<any> {
+    return this.delete(`/db/objects`, params);  
   }
 
   saveAlto(data: any) {
@@ -165,6 +165,11 @@ export class AppService {
     // {"id":{{digitalObjectId}},"login":"inovatika"}
     const url = `/object/uploadKramerius`;
     return this.post(url, data);
+  }
+
+  toggleLock(pid: string, lock: boolean) {
+    const url = lock ? '/object/lock' : '/object/unlock';
+    return this.post(url, {pid});
   }
 
 

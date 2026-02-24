@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { ViewerComponent } from 'src/app/components/viewer/viewer.component';
-import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
 import { AppService } from 'src/app/app.service';
 import { ActivatedRoute } from '@angular/router';
 import { AppConfiguration } from 'src/app/app-configuration';
@@ -21,6 +20,8 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NoperoDialogComponent } from 'src/app/components/nopero-dialog/nopero-dialog.component';
+import { SimpleDialogData } from 'src/app/components/simple-dialog/simple-dialog';
+import { SimpleDialogComponent } from 'src/app/components/simple-dialog/simple-dialog.component';
 
 @Component({
   selector: 'app-editing',
@@ -44,7 +45,7 @@ export class EditingComponent implements OnInit {
   pid: string;
 
   priorities: string[];
-  
+
   panelMode = 'ocr';
   divZoom = 1;
   imgW = 100;
@@ -80,16 +81,98 @@ export class EditingComponent implements OnInit {
   getAlto(keepSelection: boolean = false) {
     if (this.state.currentObject && this.state.currentObject.versionXml) {
       this.service.getAltoVersion(this.pid, this.state.currentObject.versionXml, this.config.login, this.state.currentObject.instance).subscribe((res: any) => {
-        this.parseXML(res.data)
+        this.processAlto(res)
       });
     } else {
-      const instance = this.route.snapshot.queryParams['instance']  ? this.route.snapshot.queryParams['instance'] : this.config.instance;
-      this.service.getAlto(this.pid, this.config.login,  instance).subscribe((res: any) => {
-        const model = res.model;
-        const versionState = res.versionState;
-        this.parseXML(res.data)
+      const instance = this.route.snapshot.queryParams['instance'] ? this.route.snapshot.queryParams['instance'] : this.config.instance;
+      this.service.getAlto(this.pid, this.config.login, instance).subscribe((res: any) => {
+        this.processAlto(res)
       });
     }
+  }
+
+  processAlto(res: any) {
+
+    // model: OTHER nebo PAGE
+    // versionState: NEW, GENERATED, EDITED, ....
+
+    const model = res.model;
+    const versionState = res.versionState;
+    if (model === 'PAGE') {
+      // Pokud je model=PAGE, tak prosím normálně pokračuj tak, jako to již teď funguje.
+      this.parseXML(res.data);
+    } else if (model === 'OTHER' && versionState === 'NEW') {
+      // Pokud je model=OTHER a zároveň versionState=NEW tak se musí zobrazit dialogové okno, že jde o více stránek, a jestli chce uživatel spustit hromadné generování stránek.
+      this.multipleGeneration(res);
+    } else if (model === 'OTHER' && versionState === 'GENERATED') {
+      // Pokud je model=OTHER a zároveň versionState=GENERATED tak se musí zobrazit dialogové okno, že jde o více stránek a jestli je chce uživatel nahrát do Krameria.
+      this.multipleUpload(res);
+    } else if (model === 'OTHER' && versionState === 'UPLOADED') {
+      // Pokud je model=OTHER a zároveň versionState=UPLOADED, tak jen zobrazit info, že stránky již byly nahrány do Krameria
+      this.service.showSnackBar('Stránky již byly nahrány do Krameria');
+    } else {
+      // Pokud je model=OTHER a zároveň versionState je jiný než NEW, GENERATED a UPLOADED, tak zobrazit info, že daný stav není pro více stránek podporovaný.
+      this.service.showSnackBar('Daný stav není pro více stránek podporovaný', true);
+    }
+
+  }
+
+  multipleGeneration(res: any) {
+// Pokud je model=OTHER a zároveň versionState=NEW tak se musí zobrazit dialogové okno, že jde o více stránek, a jestli chce uživatel spustit hromadné generování stránek.
+
+    const data: SimpleDialogData = {
+      title: 'Hromadné generování stránek',
+      message: 'Opravdu chcete spustit hromadné generování stránek?',
+      alertClass: 'app-message',
+      btn1: {
+        label: 'Ano',
+        value: 'yes',
+        color: 'warn'
+      },
+      btn2: {
+        label: 'Ne',
+        value: 'no',
+        color: 'default'
+      }
+    };
+    const dialogRef = this.dialog.open(SimpleDialogComponent, {
+      data: data
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'yes') {
+        this.parseXML(res.data);
+      }
+    });
+
+  }
+
+  multipleUpload(res: any) {
+      // Pokud je model=OTHER a zároveň versionState=GENERATED tak se musí zobrazit dialogové okno, že jde o více stránek a jestli je chce uživatel nahrát do Krameria.
+
+    const data: SimpleDialogData = {
+      title: 'Hromadné nahrání do Krameria',
+      message: 'Záznam má více stránek. Opravdu chcete nahrát do Krameria?',
+      alertClass: 'app-message',
+      btn1: {
+        label: 'Ano',
+        value: 'yes',
+        color: 'warn'
+      },
+      btn2: {
+        label: 'Ne',
+        value: 'no',
+        color: 'default'
+      }
+    };
+    const dialogRef = this.dialog.open(SimpleDialogComponent, {
+      data: data
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'yes') {
+        this.parseXML(res.data);
+      }
+    });
+
   }
 
   private parseXML(altoXml: string) {
@@ -103,17 +186,17 @@ export class EditingComponent implements OnInit {
       const info = {
         processingDateTime: processingDateTime ? processingDateTime.elements[0].text : null,
         processingSoftware: processingSoftware.elements
-      } 
+      }
       this.openNoPERO(info);
     }
     //this.addIdx();
   }
 
   openNoPERO(info: any) {
-    
+
     const dialogRef = this.dialog.open(NoperoDialogComponent, {
       width: '700px',
-      data: {info: info, priorities: this.priorities}
+      data: { info: info, priorities: this.priorities }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -123,22 +206,22 @@ export class EditingComponent implements OnInit {
     });
   }
 
-    /**
-   * Add id to all alto elements
-   */
-    addIdx() {
+  /**
+ * Add id to all alto elements
+ */
+  addIdx() {
 
-      this.state.printSpace.elements.forEach((tb: XmlJsElement) => {
-          tb.elements.forEach((line: XmlJsElement, idx: number) => {
-            line.idx = idx;
-            line.elements.forEach((word: XmlJsElement, widx: number) => {
-              word.idx = widx;
-              word.attributes['POSID'] = word.attributes['HPOS'] + '-' +  word.attributes['VPOS']
-            });
-          });
+    this.state.printSpace.elements.forEach((tb: XmlJsElement) => {
+      tb.elements.forEach((line: XmlJsElement, idx: number) => {
+        line.idx = idx;
+        line.elements.forEach((word: XmlJsElement, widx: number) => {
+          word.idx = widx;
+          word.attributes['POSID'] = word.attributes['HPOS'] + '-' + word.attributes['VPOS']
+        });
       });
+    });
 
-    }
+  }
 
   setSelectedArea(t: any) {
     this.selection = t;
@@ -149,11 +232,11 @@ export class EditingComponent implements OnInit {
 
     this.state.selectedBlocks = tBlocks.filter((tb: XmlJsElement) => {
       return this.intersectRect(this.selection, DOMRect.fromRect({
-         x: parseInt(tb.attributes['HPOS']), 
-         y: parseInt(tb.attributes['VPOS']), 
-         width: parseInt(tb.attributes['WIDTH']), 
-         height: parseInt(tb.attributes['HEIGHT'])
-         }))
+        x: parseInt(tb.attributes['HPOS']),
+        y: parseInt(tb.attributes['VPOS']),
+        width: parseInt(tb.attributes['WIDTH']),
+        height: parseInt(tb.attributes['HEIGHT'])
+      }))
     })
 
     this.state.selectedBlocks.forEach((tb: XmlJsElement) => {
@@ -161,20 +244,20 @@ export class EditingComponent implements OnInit {
       if (tlines) {
         tlines.forEach((line: XmlJsElement, idx: number) => {
           //line.idx = idx;
-          if (this.intersectRect(this.selection, DOMRect.fromRect({ 
-            x: parseInt(line.attributes['HPOS']), 
-            y: parseInt(line.attributes['VPOS']), 
-            width: parseInt(line.attributes['WIDTH']), 
+          if (this.intersectRect(this.selection, DOMRect.fromRect({
+            x: parseInt(line.attributes['HPOS']),
+            y: parseInt(line.attributes['VPOS']),
+            width: parseInt(line.attributes['WIDTH']),
             height: parseInt(line.attributes['HEIGHT'])
           }))) {
             //console.log(idx);
             this.state.selectedLines.push(line);
             line.elements.forEach((word: XmlJsElement, widx: number) => {
               //word.idx = widx;
-              if (this.intersectRect(this.selection, DOMRect.fromRect({ 
-                x: parseInt(word.attributes['HPOS']), 
-                y: parseInt(word.attributes['VPOS']), 
-                width: parseInt(word.attributes['WIDTH']), 
+              if (this.intersectRect(this.selection, DOMRect.fromRect({
+                x: parseInt(word.attributes['HPOS']),
+                y: parseInt(word.attributes['VPOS']),
+                width: parseInt(word.attributes['WIDTH']),
                 height: parseInt(word.attributes['HEIGHT'])
                 // x: word.$.HPOS, y: word.$.VPOS, width: word.$.WIDTH, height: word.$.HEIGHT 
               }))) {
@@ -199,7 +282,7 @@ export class EditingComponent implements OnInit {
       r2.bottom <= r1.top);
   }
 
-  setArea(data: {blockIdx: number, lineIdx: number, wordIdx: number}) {
+  setArea(data: { blockIdx: number, lineIdx: number, wordIdx: number }) {
     // const b = this.state.selectedBlocks[0];
     this.state.clearSelection();
     this.state.selectedBlocks = [this.state.printSpace.elements[data.blockIdx]];
@@ -217,7 +300,7 @@ export class EditingComponent implements OnInit {
     // const xml = builder.buildObject(this.alto);
 
     const xml = js2xml(this.state.alto);
-    const instance = this.route.snapshot.queryParams['instance']  ? this.route.snapshot.queryParams['instance'] : this.config.instance;
+    const instance = this.route.snapshot.queryParams['instance'] ? this.route.snapshot.queryParams['instance'] : this.config.instance;
     const data = {
       pid: this.pid,
       login: this.config.login,
@@ -230,14 +313,14 @@ export class EditingComponent implements OnInit {
       } else {
         this.service.showSnackBar('desc.savedSuccess');
       }
-      
+
     })
 
   }
 
   generatePERO(priority: string) {
     //{"pid":"{{uuidStrana}}","priority":"LOW", "instance":"k7"}
-    
+
     const data = {
       pid: this.pid,
       priority: priority,
@@ -257,7 +340,7 @@ export class EditingComponent implements OnInit {
     this.viewerWidth = e.sizes[0];
   }
 
-  
+
 
   zoom(scale: number) {
     this.divZoom = this.divZoom * scale;
