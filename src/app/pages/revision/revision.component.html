@@ -6,6 +6,7 @@
       <span class="app-last">{{ 'navbar.revision' | translate }}</span>
     </div>
     <div class="app-h-100">
+      <button *ngIf="selectedItem && totalSelected === 1" mat-button matIconSuffix color="warn" (click)="toggleLock()">{{ selectedItem.lock ? 'unlock' : 'lock'}}</button>
       <button mat-button matIconSuffix color="warn" [disabled]="totalSelected < 1" (click)="onDeleteRevisions()">Odstranit revize(y)</button>
       <button mat-button matIconSuffix color="warn" (click)="deleteDO()">Odstranit digiální objekt(y)</button>
     </div>

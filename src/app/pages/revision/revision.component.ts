@@ -122,6 +122,17 @@ export class RevisionComponent {
     });
   }
 
+  toggleLock() {
+    this.service.toggleLock(this.selectedItem.pid, !this.selectedItem.lock).subscribe((res: any) => {
+      if (res.errors) {
+        this.service.showSnackBar(res.errors[0], true);
+      } else {
+        this.service.showSnackBar('desc.savedSuccess');
+        this.getDOs();
+      }
+    });
+  }
+
   onDeleteRevisions() {
   
       const title = 'button.delete_selected_revisions';
