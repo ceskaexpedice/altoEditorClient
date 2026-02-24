@@ -30,8 +30,8 @@ import { AppState } from 'src/app/shared/app.state';
   selector: 'app-revision',
   standalone: true,
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'cs'},
-    {provide: MatPaginatorIntl, useClass: PaginatorI18n}
+    { provide: MAT_DATE_LOCALE, useValue: 'cs' },
+    { provide: MatPaginatorIntl, useClass: PaginatorI18n }
   ],
   imports: [CommonModule, TranslateModule, RouterModule, MatSortModule, FormsModule, ReactiveFormsModule,
     AngularSplitModule, MatIconModule, MatButtonModule, MatTableModule, MatFormFieldModule,
@@ -43,7 +43,7 @@ import { AppState } from 'src/app/shared/app.state';
 export class RevisionComponent {
   displayedColumns: string[] = ['parentLabel', 'label', 'datum', 'state', 'pid', 'userLogin', 'actions'];
   filterColumns: string[] = [];
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   pidFilter: string;
   parentLabelFilter: string;
@@ -65,7 +65,7 @@ export class RevisionComponent {
   totalRows: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
-  
+
   selectedItem: any;
   startShiftClickIdx: number;
   lastClickIdx: number;
@@ -74,8 +74,8 @@ export class RevisionComponent {
   constructor(
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
-        private translator: TranslateService,
-        private dialog: MatDialog,
+    private translator: TranslateService,
+    private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
     private config: AppConfiguration,
@@ -85,7 +85,7 @@ export class RevisionComponent {
   ngOnInit() {
     this._locale = 'cs';
     this._adapter.setLocale(this._locale);
-    this.sort.sort(({ id: this.sortBy, start: this.orderSort}) as MatSortable);
+    this.sort.sort(({ id: this.sortBy, start: this.orderSort }) as MatSortable);
     this.displayedColumns.forEach(c => {
       this.filterColumns.push(c + '-filter');
     });
@@ -134,54 +134,66 @@ export class RevisionComponent {
   }
 
   onDeleteRevisions() {
-  
-      const title = 'button.delete_selected_revisions';
-      const data: SimpleDialogData = {
-        title: String(this.translator.instant(title)),
-        message: String(this.translator.instant('Opravdu chcete smazat revize?')),
-        alertClass: 'app-message',
-        btn1: {
-          label: 'Ano',
-          value: 'yes',
-          color: 'warn'
-        },
-        btn2: {
-          label: 'Ne',
-          value: 'no',
-          color: 'default'
-        }
-      };
-      const dialogRef = this.dialog.open(SimpleDialogComponent, {
-        data: data
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result === 'yes') {
-          this.deleteRevisions();
-        }
-      });
-  
-    }
-    
-    deleteRevisions() {
-      const params: any = {};
-      params.id = this.revisions.filter(b => b.selected).map(b => b.id);
-      this.service.deleteObjects(params)
-    }
-    
-    deleteDO() {
 
-      const dialogRef = this.dialog.open(DeleteMultipleDialogComponent, {
-        
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          const params: any = {};
-          params.pid = result.pids;
-          this.service.deleteObjects(params)
-        }
-      });
+    const title = 'button.delete_selected_revisions';
+    const data: SimpleDialogData = {
+      title: String(this.translator.instant(title)),
+      message: String(this.translator.instant('Opravdu chcete smazat revize?')),
+      alertClass: 'app-message',
+      btn1: {
+        label: 'Ano',
+        value: 'yes',
+        color: 'warn'
+      },
+      btn2: {
+        label: 'Ne',
+        value: 'no',
+        color: 'default'
+      }
+    };
+    const dialogRef = this.dialog.open(SimpleDialogComponent, {
+      data: data
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'yes') {
+        this.deleteRevisions();
+      }
+    });
 
-    }
+  }
+
+  deleteRevisions() {
+    const params: any = {};
+    params.id = this.revisions.filter(b => b.selected).map(b => b.id);
+    this.service.deleteObjects(params).subscribe(res => {
+      if (res.errors) {
+        this.service.showSnackBar(res.errors[0], true);
+      } else {
+        this.service.showSnackBar('desc.savedSuccess');
+      }
+    });
+  }
+
+  deleteDO() {
+
+    const dialogRef = this.dialog.open(DeleteMultipleDialogComponent, {
+
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const params: any = {};
+        params.pid = result.pids;
+        this.service.deleteObjects(params).subscribe(res => {
+          if (res.errors) {
+            this.service.showSnackBar(res.errors[0], true);
+          } else {
+            this.service.showSnackBar('desc.savedSuccess');
+          }
+        });
+      }
+    });
+
+  }
 
   onSortChange(e: any) {
     this.sortBy = e.active ? e.active : 'datum';
@@ -225,37 +237,37 @@ export class RevisionComponent {
   }
 
   select(item: any, idx: number, event: MouseEvent) {
-      if (event && (event.metaKey || event.ctrlKey)) {
-        item.selected = !item.selected;
-        this.startShiftClickIdx = idx;
-      } else if (event && event.shiftKey) {
-        if (this.startShiftClickIdx > -1) {
-          const oldFrom = Math.min(this.startShiftClickIdx, this.lastClickIdx);
-          const oldTo = Math.max(this.startShiftClickIdx, this.lastClickIdx);
-          for (let i = oldFrom; i <= oldTo; i++) {
-            this.revisions[i].selected = false;
-          }
-          const from = Math.min(this.startShiftClickIdx, idx);
-          const to = Math.max(this.startShiftClickIdx, idx);
-          for (let i = from; i <= to; i++) {
-            this.revisions[i].selected = true;
-          }
-        } else {
-          // nic neni.
-          this.revisions.forEach(i => i.selected = false);
-          item.selected = true;
-          this.startShiftClickIdx = idx;
+    if (event && (event.metaKey || event.ctrlKey)) {
+      item.selected = !item.selected;
+      this.startShiftClickIdx = idx;
+    } else if (event && event.shiftKey) {
+      if (this.startShiftClickIdx > -1) {
+        const oldFrom = Math.min(this.startShiftClickIdx, this.lastClickIdx);
+        const oldTo = Math.max(this.startShiftClickIdx, this.lastClickIdx);
+        for (let i = oldFrom; i <= oldTo; i++) {
+          this.revisions[i].selected = false;
         }
-        window.getSelection().empty();
+        const from = Math.min(this.startShiftClickIdx, idx);
+        const to = Math.max(this.startShiftClickIdx, idx);
+        for (let i = from; i <= to; i++) {
+          this.revisions[i].selected = true;
+        }
       } else {
+        // nic neni.
         this.revisions.forEach(i => i.selected = false);
         item.selected = true;
         this.startShiftClickIdx = idx;
       }
-  
-      this.lastClickIdx = idx;
-      this.totalSelected = this.revisions.filter(i => i.selected).length;
-      this.selectedItem = item;
+      window.getSelection().empty();
+    } else {
+      this.revisions.forEach(i => i.selected = false);
+      item.selected = true;
+      this.startShiftClickIdx = idx;
     }
+
+    this.lastClickIdx = idx;
+    this.totalSelected = this.revisions.filter(i => i.selected).length;
+    this.selectedItem = item;
+  }
 
 }

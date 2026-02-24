@@ -141,7 +141,13 @@ export class ProcessManagementComponent {
   deleteBatches() {
     const params: any = {};
     params.id = this.batches.filter(b => b.selected).map(b => b.id);
-    this.service.deleteBatches(params)
+    this.service.deleteBatches(params).subscribe(res => {
+          if (res.errors) {
+            this.service.showSnackBar(res.errors[0], true);
+          } else {
+            this.service.showSnackBar('desc.savedSuccess');
+          }
+        });
   }
 
   onSortChange(e: any) {
