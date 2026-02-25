@@ -140,7 +140,8 @@ export class EditingComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'yes') {
-        this.parseXML(res.data);
+        const instance = this.route.snapshot.queryParams['instance'] ? this.route.snapshot.queryParams['instance'] : this.config.instance;
+        this.generatePERO(this.pid, 'MEDIUM', instance);
       }
     });
 
@@ -169,7 +170,21 @@ export class EditingComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'yes') {
-        this.parseXML(res.data);
+        const data = {
+          pid: this.pid,
+          id: this.state.currentObject.id,
+          login: this.config.login
+        }
+        this.service.uploadKramerius(data).subscribe((res: any) => {
+          if (res.errors) {
+            this.service.showSnackBar(res.errors[0], true);
+          } else {
+            this.service.showSnackBar(res.content);
+          }
+          
+        });
+
+
       }
     });
 
@@ -201,7 +216,7 @@ export class EditingComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.generatePERO(result.priority);
+        this.generatePERO(this.pid, result.priority, this.state.currentObject?.instance);
       }
     });
   }
@@ -318,13 +333,17 @@ export class EditingComponent implements OnInit {
 
   }
 
-  generatePERO(priority: string) {
+  onGeneratePERO(priority: string) {
+     this.generatePERO(this.pid, priority, this.state.currentObject?.instance);
+  }
+
+  generatePERO(pid: string, priority: string, instance: string) {
     //{"pid":"{{uuidStrana}}","priority":"LOW", "instance":"k7"}
 
     const data = {
-      pid: this.pid,
+      pid: pid,
       priority: priority,
-      instance: this.state.currentObject?.instance
+      instance: instance
     }
     this.service.generatePERO(data).subscribe(res => {
       if (res.errors) {

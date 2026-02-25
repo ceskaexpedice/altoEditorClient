@@ -1,4 +1,5 @@
 export interface DigitalObject{
+    id: number;
     pid: string;
     instance: string;
     datum: Date;

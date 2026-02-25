@@ -46,7 +46,7 @@
               <button mat-icon-button (click)="panelMode = 'ocr'" [class.app-active]="panelMode === 'ocr'"><mat-icon>edit_note</mat-icon></button>
               <button mat-icon-button *ngIf="!state.currentObject" [matMenuTriggerFor]="menu" [matTooltip]="'button.PERO' | translate"><mat-icon>scanner</mat-icon></button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item *ngFor="let p of priorities" (click)="generatePERO(p)">{{ 'desc.priority' | translate }}: {{'priority.' + p | translate}}</button>
+                <button mat-menu-item *ngFor="let p of priorities" (click)="onGeneratePERO(p)">{{ 'desc.priority' | translate }}: {{'priority.' + p | translate}}</button>
               </mat-menu>
             </div>
           </div>

@@ -43,7 +43,7 @@ const year = today.getFullYear();
 })
 
 export class ProcessManagementComponent {
-  displayedColumns: string[] = ['id', 'pid', 'createDate', 'updateDate', 'state', 'substate', 'priority', 'type', 'instance'];
+  displayedColumns: string[] = ['id', 'pid', 'createDate', 'updateDate', 'state', 'subState', 'priority', 'type', 'instance'];
   filterColumns: string[] = [];
 
   batches: Batch[] = [];

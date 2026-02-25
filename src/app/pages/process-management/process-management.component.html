@@ -82,13 +82,13 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="substate-filter">
+        <ng-container matColumnDef="subState-filter">
           <th mat-header-cell *matHeaderCellDef>  </th>
         </ng-container>
-        <ng-container matColumnDef="substate">
+        <ng-container matColumnDef="subState">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'desc.substate' | translate }}</th>
           <td mat-cell *matCellDef="let element">
-            <span *ngIf="element.substate" class="app-badge" [ngClass]="'app-' + element.substate">{{ 'state.' + element.substate | translate }}</span>
+            <span *ngIf="element.subState" class="app-badge" [ngClass]="'app-' + element.subState">{{ 'state.' + element.subState | translate }}</span>
           </td>
         </ng-container>
   
