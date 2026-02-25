@@ -28,7 +28,10 @@ export class OcrEditorComponent {
   _printSpaceOriginal: XmlJsElement;
   @Input() set printSpace(value: XmlJsElement) {
     this._printSpace = value;
-    this._printSpaceOriginal = JSON.parse(JSON.stringify(value));
+    if (value) {
+      this._printSpaceOriginal = JSON.parse(JSON.stringify(value));
+    }
+    
     this.checkDiffs();
   }
   
@@ -50,7 +53,7 @@ export class OcrEditorComponent {
 
   checkDiffs() {
     this.diffs = {};
-    if (this._printSpaceDiff) {
+    if (this._printSpaceDiff && this._printSpace) {
       this._printSpace.elements.forEach((tb: XmlJsElement) => {
         if (tb.elements){
           tb.elements.forEach((line: XmlJsElement, idx: number) => {
@@ -69,6 +72,9 @@ export class OcrEditorComponent {
   }
 
   checkChanged() {
+    if (!this._printSpaceOriginal) {
+      return;
+    }
     let diffs = false;
       this._printSpace.elements.forEach((tb: XmlJsElement) => {
         if (tb.elements){

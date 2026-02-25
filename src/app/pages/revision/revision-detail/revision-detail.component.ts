@@ -126,9 +126,13 @@ export class RevisionDetailComponent {
     this.state.clearSelection();
     this.service.getAltoVersion(this.pid, this.selectedVersion.versionXml, this.config.login, this.config.instance).subscribe((res: any) => {
       // this.altoSelected = res.data;
-      this.state.altoXml = Utils.prettifyXml(res.data);
-      this.state.alto = xml2js(this.state.altoXml);
-      this.state.printSpace = this.state.setPrintSpace(this.state.alto);
+      if (res.data) {
+        this.state.altoXml = Utils.prettifyXml(res.data);
+        this.state.alto = xml2js(this.state.altoXml);
+        this.state.printSpace = this.state.setPrintSpace(this.state.alto);
+      } else {
+        this.service.showSnackBar(res.content, true)
+      }
     });
   }
 

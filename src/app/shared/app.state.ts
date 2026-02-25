@@ -20,9 +20,9 @@ export class AppState {
 
   setPrintSpace(alto: any) {
     return alto.elements[0].elements
-    .find((e: XmlJsElement) => e.name === 'Layout')
-    .elements.find((e: XmlJsElement) => e.name === 'Page')
-    .elements.find((e: XmlJsElement) => e.name === 'PrintSpace');
+      .find((e: XmlJsElement) => e.name === 'Layout')
+      .elements.find((e: XmlJsElement) => e.name === 'Page')
+      .elements.find((e: XmlJsElement) => e.name === 'PrintSpace');
   }
 
   clearSelection() {

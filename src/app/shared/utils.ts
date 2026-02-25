@@ -33,12 +33,14 @@ export class Utils {
     public static getElementByPos(printSpace: XmlJsElement, hpos: string, vpos: string): XmlJsElement {
         for (let i = 0; i < printSpace.elements.length; i++) {
             const tb: XmlJsElement = printSpace.elements[i];
-            for (let idx = 0; idx < tb.elements.length; idx++) {
-                const line: XmlJsElement = tb.elements[idx];
-                for (let widx = 0; widx < line.elements.length; widx++) {
-                    const word: XmlJsElement = line.elements[widx];
-                    if ((word.attributes['HPOS'] === hpos) && (word.attributes['VPOS'] === vpos)) {
-                        return word;
+            if (tb.elements) {
+                for (let idx = 0; idx < tb.elements.length; idx++) {
+                    const line: XmlJsElement = tb.elements[idx];
+                    for (let widx = 0; widx < line.elements.length; widx++) {
+                        const word: XmlJsElement = line.elements[widx];
+                        if ((word.attributes['HPOS'] === hpos) && (word.attributes['VPOS'] === vpos)) {
+                            return word;
+                        }
                     }
                 }
             }
