@@ -131,7 +131,7 @@ export class AppService {
   }
 
   deleteBatches(params: any): Observable<any> {
-    return this.delete('db/batches', params);
+    return this.delete('/db/batches', params);
   }
 
   deleteObjects(params: HttpParams): Observable<any> {
