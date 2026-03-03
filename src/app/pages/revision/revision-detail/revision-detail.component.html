@@ -64,7 +64,7 @@
                   </ng-container>
                 
                   <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"  class="app-cursor-pointer" [class.app-active]="row.id === selectedVersion?.id" (click)="getVersion(row)"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"  class="app-cursor-pointer" [class.app-selected]="row.id === selectedVersion?.id" (click)="getVersion(row)"></tr>
                 </table>
               </div>        
             </div>

@@ -152,7 +152,8 @@ export class RevisionDetailComponent {
     // versionState: NEW, GENERATED, EDITED, ....
 
     const model = res.model;
-    const versionState = res.versionState;
+    const versionState = res.state;
+    console.log(model, versionState)
     if (model === 'PAGE') {
       // Pokud je model=PAGE, tak prosím normálně pokračuj tak, jako to již teď funguje.
       return true;
