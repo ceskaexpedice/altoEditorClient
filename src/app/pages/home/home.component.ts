@@ -42,7 +42,7 @@ export class HomeComponent {
   
     @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  displayedColumns: string[] = ['label', 'datum', 'state', 'pid', 'actions'];
+  displayedColumns: string[] = ['label', 'datum', 'state', 'pid', 'model', 'actions'];
   filterColumns: string[] = [];
 
   pid: string;
@@ -58,6 +58,8 @@ export class HomeComponent {
   labelFilter: string;
   states: string[] = [];
   stateFilter: string = '';
+  models: string[] = ['PAGE', 'OTHER'];
+  modelFilter: string = '';
   datum = new FormControl();
   
   constructor(

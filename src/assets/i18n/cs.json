@@ -33,6 +33,7 @@
     "parentLabel": "Název nadřazeného",
     "label": "Název",
     "state": "Stav",
+    "model": "Model",
     "priority": "Priorita",
     "type": "Typ",
     "instance": "Instance",
@@ -47,6 +48,7 @@
     "filterByCreateDate": "Filtrovat dle data vytvoření",
     "filterByUpdateDate": "Filtrovat dle data zmeny",
     "filterByStatus": "Filtrovat dle stavu",
+    "filterByModel": "Filtrovat dle modelu",
     "filterByPriority": "Filtrovat dle priority",
     "savedSuccess": "Změny úspěšně uložené",
     "PEROExists": "Alto soubor již byl přegenerován",
@@ -56,6 +58,10 @@
     "version0": "Původní verze objektu",
     "versionPero": "Vygenerovaná verze pomocí PERO",
     "connectedInstance": "Připojená instance"
+  },
+  "model": {
+    "PAGE": "Stránka",
+    "OTHER": "Jíné"
   },
   "state": {
     "PLANNED": "Plánované",

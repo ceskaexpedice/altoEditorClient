@@ -33,6 +33,7 @@
     "parentLabel": "Parent label",
     "label": "Label",
     "state": "State",
+    "model": "Model",
     "priority": "Priority",
     "type": "Type",
     "instance": "Instance",
@@ -47,6 +48,7 @@
     "filterByCreateDate": "Filter by created date",
     "filterByUpdateDate": "Filter by updated date",
     "filterByStatus": "Filter by status",
+    "filterByModel": "Filter by model",
     "filterByPriority": "Filter by priority",
     "savedSuccess": "Changes successfully saved",
     "PEROExists": "Alto file already exists",
@@ -56,6 +58,10 @@
     "version0": "Original version",
     "versionPero": "Generated version by PERO",
     "connectedInstance": "Connected instance"
+  },
+  "model": {
+    "PAGE": "Page",
+    "OTHER": "Other"
   },
   "state": {
     "PLANNED": "Planned",

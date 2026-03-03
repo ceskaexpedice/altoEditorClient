@@ -75,6 +75,24 @@
                 element.state | translate }}</span>
             </td>
           </ng-container>
+      
+  
+        <ng-container matColumnDef="model-filter">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-form-field>
+              <mat-select [(ngModel)]="modelFilter" (ngModelChange)="filter('model', modelFilter)" panelClass="app-panel-table-header" [placeholder]="'desc.filterByModel' | translate">
+                <mat-option *ngFor="let s of models" [value]="s">{{ 'model.' + s | translate }}</mat-option>
+              </mat-select>
+              <button mat-icon-button matIconSuffix color="warn" *ngIf="modelFilter" (click)="filter('state', ''); modelFilter = ''; $event.stopPropagation();"><mat-icon>clear</mat-icon></button>
+            </mat-form-field>
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="model">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'desc.model' | translate }}</th>
+          <td mat-cell *matCellDef="let element" >
+            <span>{{ 'model.' + element.model | translate }}</span>
+          </td>
+        </ng-container>
 
           <ng-container matColumnDef="pid-filter">
             <th mat-header-cell *matHeaderCellDef>

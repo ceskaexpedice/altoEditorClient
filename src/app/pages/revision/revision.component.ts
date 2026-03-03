@@ -41,7 +41,7 @@ import { AppState } from 'src/app/shared/app.state';
   styleUrls: ['./revision.component.scss']
 })
 export class RevisionComponent {
-  displayedColumns: string[] = ['parentLabel', 'label', 'datum', 'state', 'pid', 'userLogin', 'actions'];
+  displayedColumns: string[] = ['parentLabel', 'label', 'datum', 'state', 'pid', 'model', 'userLogin', 'actions'];
   filterColumns: string[] = [];
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -50,6 +50,8 @@ export class RevisionComponent {
   labelFilter: string;
   states: string[] = [];
   stateFilter: string = '';
+  models: string[] = ['PAGE', 'OTHER'];
+  modelFilter: string = '';
   priorities: string[] = [];
   priorityFilter: string = '';
   datum = new FormControl();
