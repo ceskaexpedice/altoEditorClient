@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +11,7 @@ import { AppConfiguration } from 'src/app/app-configuration';
 import { AppService } from 'src/app/app.service';
 import { DigitalObject } from 'src/app/shared/digital-object';
 import { AppState } from 'src/app/shared/app.state';
-import { MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortable, MatSortModule } from '@angular/material/sort';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { HttpParams } from '@angular/common/http';
 import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
@@ -39,6 +39,8 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class HomeComponent {
 
+  
+    @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   displayedColumns: string[] = ['label', 'datum', 'state', 'pid', 'actions'];
   filterColumns: string[] = [];
@@ -46,7 +48,7 @@ export class HomeComponent {
   pid: string;
   digitalObjects: DigitalObject[] = [];
   sortBy: string = 'datum';
-  orderSort: string = 'asc';
+  orderSort: string = 'desc';
   totalRows: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
@@ -75,6 +77,8 @@ export class HomeComponent {
     });
 
     this.states = Object.values(DO_STATES);
+    
+        this.sort.sort(({ id: this.sortBy, start: this.orderSort }) as MatSortable);
 
     this.route.paramMap.subscribe((params: any) => {
       this.pid = params.get('pid');
@@ -110,9 +114,8 @@ export class HomeComponent {
   }
 
   onSortChange(e: any) {
-    console.log(e);
     this.sortBy = e.active ?  e.active : 'datum';
-    this.orderSort = e.direction ? e.direction : 'asc';
+    this.orderSort = e.direction ? e.direction : 'desc';
     this.getDOs();
   }
 
