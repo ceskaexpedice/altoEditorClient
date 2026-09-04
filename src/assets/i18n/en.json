@@ -23,7 +23,18 @@
     "logIn": "Login",
     "delete_selected_batches": "Delete selected processes",
     "deleteMultiple": "Delete multiple",
-    "delete": "Delete"
+    "delete": "Delete",
+    "stopProcesses": "Stop selected processes",
+    "resumeProcesses": "Resume selected processes",
+    "selectAllProcesses": "Select all processes on this page",
+    "selectProcess": "Select process"
+  },
+  "process": {
+    "stopSuccess": "Selected processes were stopped",
+    "resumeSuccess": "Selected processes were resumed",
+    "actionFailed": "The process action failed"
+    "logIn": "Login",
+
   },
   "desc": {
     "id": "Id",
@@ -64,6 +75,7 @@
     "OTHER": "Other"
   },
   "state": {
+    "STOPPED": "Stopped",
     "PLANNED": "Planned",
     "RUNNING": "Running",
     "FAILED": "Failed",

@@ -142,7 +142,7 @@ $alerts: (
     color: $app-color-warn,
     bg: rgba($app-color-warn, .1),
     border: rgba($app-color-warn, .2)
-  ),    
+  ),
   info: (
     color: $app-color-info,
     bg: #fff3cd,
@@ -165,6 +165,7 @@ $states: (
   PLANNED: $app-color-info,
   RUNNING: mat-color($mat-blue-gray, 600),
   FAILED: $app-color-warn,
+  STOPPED: $app-gray-6,
   REJECTED: $app-color-warn,
   DONE: $app-color-success,
   DOWNLOADING: mat-color($mat-teal, 500),

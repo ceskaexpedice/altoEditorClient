@@ -20,6 +20,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { HttpParams } from '@angular/common/http';
 import { BATCH_PRIORITIES, BATCH_STATES, DO_STATES } from 'src/app/shared/constants';
 import { PaginatorI18n } from 'src/app/shared/paginator-i18n';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SimpleDialogData } from 'src/app/components/simple-dialog/simple-dialog';
 import { SimpleDialogComponent } from 'src/app/components/simple-dialog/simple-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -35,18 +37,21 @@ const year = today.getFullYear();
     {provide: MatPaginatorIntl, useClass: PaginatorI18n}
   ],
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule, MatSelectModule, 
+  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule, MatSelectModule,
     MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, MatDialogModule,
-    MatIconModule, TranslateModule, MatTableModule, MatTooltipModule, MatSortModule, MatPaginatorModule, MatButtonModule],
+    MatIconModule, TranslateModule, MatTableModule, MatTooltipModule, MatSortModule, MatPaginatorModule, MatButtonModule,
+    MatCheckboxModule],
   templateUrl: './process-management.component.html',
   styleUrls: ['./process-management.component.scss']
 })
 
 export class ProcessManagementComponent {
-  displayedColumns: string[] = ['id', 'pid', 'createDate', 'updateDate', 'state', 'subState', 'priority', 'type', 'instance'];
+  displayedColumns: string[] = ['select', 'id', 'pid', 'createDate', 'updateDate', 'state', 'subState', 'priority', 'type', 'instance'];
   filterColumns: string[] = [];
 
   batches: Batch[] = [];
+  selection = new SelectionModel<Batch>(true, []);
+  actionInProgress = false;
   sortBy: string = 'updateDate';
   orderSort: string = 'desc';
   totalRows: number = 0;
@@ -83,7 +88,7 @@ export class ProcessManagementComponent {
     this._adapter.setLocale(this._locale);
     this.states = Object.values(BATCH_STATES);
     this.priorities = Object.values(BATCH_PRIORITIES);
-    
+
     this.getBatches();
     this.displayedColumns.forEach(c => {
       this.filterColumns.push(c + '-filter');
@@ -106,6 +111,64 @@ export class ProcessManagementComponent {
     this.service.getBatches(params).subscribe((res: any) => {
       this.batches = res.data;
       this.totalRows = res.totalRows;
+      this.selection.clear();
+    });
+  }
+
+  isAllSelected(): boolean {
+    return this.batches.length > 0 && this.selection.selected.length === this.batches.length;
+  }
+
+  toggleAllRows(): void {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+    } else {
+      this.selection.select(...this.batches);
+    }
+  }
+
+  canStopSelected(): boolean {
+    return this.selection.selected.some(batch => batch.state === BATCH_STATES.BATCH_STATE_PLANNED
+      || batch.state === BATCH_STATES.BATCH_STATE_RUNNING);
+  }
+
+  canResumeSelected(): boolean {
+    return this.selection.selected.some(batch => batch.state === BATCH_STATES.BATCH_STATE_FAILED
+      || batch.state === BATCH_STATES.BATCH_STATE_STOPPED);
+  }
+
+  stopSelected(): void {
+    const ids = this.selection.selected
+      .filter(batch => batch.state === BATCH_STATES.BATCH_STATE_PLANNED
+        || batch.state === BATCH_STATES.BATCH_STATE_RUNNING)
+      .map(batch => batch.id);
+    this.runBatchAction(this.service.stopBatches(ids), 'process.stopSuccess');
+  }
+
+  resumeSelected(): void {
+    const ids = this.selection.selected
+      .filter(batch => batch.state === BATCH_STATES.BATCH_STATE_FAILED
+        || batch.state === BATCH_STATES.BATCH_STATE_STOPPED)
+      .map(batch => batch.id);
+    this.runBatchAction(this.service.resumeBatches(ids), 'process.resumeSuccess');
+  }
+
+  private runBatchAction(request: any, successMessage: string): void {
+    this.actionInProgress = true;
+    request.subscribe({
+      next: (res: any) => {
+        this.actionInProgress = false;
+        if (res.errors?.length) {
+          this.service.showSnackBar(res.errors[0], true);
+          return;
+        }
+        this.service.showSnackBar(successMessage);
+        this.getBatches();
+      },
+      error: (error: any) => {
+        this.actionInProgress = false;
+        this.service.showSnackBar(error?.error?.errors?.[0] || error?.message || 'process.actionFailed', true);
+      }
     });
   }
 
@@ -137,7 +200,7 @@ export class ProcessManagementComponent {
     });
 
   }
-  
+
   deleteBatches() {
     const params: any = {};
     params.id = this.batches.filter(b => b.selected).map(b => b.id);
@@ -165,7 +228,7 @@ export class ProcessManagementComponent {
     } else {
       this.filter(field, '');
     }
-    
+
   }
 
   filter(field: string, value: string) {

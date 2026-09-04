@@ -28,7 +28,7 @@ export class AppService {
       panelClass: clazz
     });
   }
-  
+
   private get<T>(url: string, params: HttpParams = new HttpParams(), responseType?: any): Observable<T> {
     // const r = re ? re : 'json';
     const options = { params, responseType, withCredentials: true };
@@ -37,8 +37,8 @@ export class AppService {
 
   }
 
-  private post(url: string, obj: any) {
-    return this.http.post<any>(`api${url}`, obj);
+  private post(url: string, obj: any, params?: HttpParams) {
+    return this.http.post<any>(`api${url}`, obj, { params });
   }
 
   private delete(url: string, params = {}): Observable<Object> {
@@ -75,7 +75,7 @@ export class AppService {
 
   getAllDigitalObjects(params: HttpParams): Observable<string> {
     return this.get(`/db/objects`, params);
-    
+
   }
 
   getSiblings(pid: string, instance: string) {
@@ -83,22 +83,22 @@ export class AppService {
     .set('pid', pid)
     .set('instance', instance);
     return this.get(`/object/siblings`, params);
-    
+
   }
 
   getVersions(pid: string, login: string, instance: string, filterField?: string, filterValue?: string): Observable<string> {
     const params: HttpParams = new HttpParams()
     .set('pid', pid);
     return this.get(`/db/objects`, params);
-    
+
   }
-  
+
   getImge(pid: string, login: string, instance: string): Observable<any> {
     const params: HttpParams = new HttpParams()
     .set('pid', pid)
     .set('instance', instance);
     return this.get(`/object/image`, params, 'blob');
-    
+
   }
 
   getAlto(pid: string, login: string, instance: string): Observable<string> {
@@ -106,7 +106,7 @@ export class AppService {
     .set('pid', pid)
     .set('instance', instance);
     return this.get(`/object/alto`, params);
-    
+
   }
 
   getAltoOriginal(pid: string, login: string, instance: string): Observable<string> {
@@ -114,7 +114,7 @@ export class AppService {
     .set('pid', pid)
     .set('instance', instance);
     return this.get(`/object/altoOriginal`, params);
-    
+
   }
 
   getAltoVersion(pid: string, versionXml: string, login: string, instance: string): Observable<string> {
@@ -123,11 +123,11 @@ export class AppService {
     .set('versionXml', versionXml)
     .set('instance', instance);
     return this.get(`/object/alto`, params);
-    
+
   }
 
   getBatches(params: HttpParams): Observable<string> {
-    return this.get(`/db/batches`, params);  
+    return this.get(`/db/batches`, params);
   }
 
   deleteBatches(params: any): Observable<any> {
@@ -135,7 +135,19 @@ export class AppService {
   }
 
   deleteObjects(params: HttpParams): Observable<any> {
-    return this.delete(`/db/objects`, params);  
+    return this.delete(`/db/objects`, params);
+  }
+
+  stopBatches(ids: number[]): Observable<any> {
+    return this.post(`/db/batches/stop`, null, this.getBatchIdsParams(ids));
+  }
+
+  resumeBatches(ids: number[]): Observable<any> {
+    return this.post(`/db/batches/resume`, null, this.getBatchIdsParams(ids));
+  }
+
+  private getBatchIdsParams(ids: number[]): HttpParams {
+    return ids.reduce((params, id) => params.append('id', id), new HttpParams());
   }
 
   saveAlto(data: any) {

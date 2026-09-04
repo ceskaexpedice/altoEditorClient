@@ -1,1 +1,11 @@
 
+.mat-column-select {
+  box-sizing: border-box;
+  width: 48px;
+  padding-left: 12px;
+  padding-right: 4px;
+}
+
+tr.app-selected td {
+  background-color: rgba(0, 0, 0, .06);
+}

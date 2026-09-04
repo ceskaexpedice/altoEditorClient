@@ -23,7 +23,16 @@
     "logIn": "Přihlásit se",
     "delete_selected_batches": "Smazat vybrané procesy",
     "deleteMultiple": "Hromadné mazání",
-    "delete": "Smazat"
+    "delete": "Smazat",
+    "stopProcesses": "Zastavit vybrané procesy",
+    "resumeProcesses": "Znovu spustit vybrané procesy",
+    "selectAllProcesses": "Vybrat všechny procesy na této stránce",
+    "selectProcess": "Vybrat proces"
+  },
+  "process": {
+    "stopSuccess": "Vybrané procesy byly zastaveny",
+    "resumeSuccess": "Vybrané procesy byly znovu spuštěny",
+    "actionFailed": "Akce nad procesy se nezdařila"
   },
   "desc": {
     "id": "Id",
@@ -64,6 +73,7 @@
     "OTHER": "Jíné"
   },
   "state": {
+    "STOPPED": "Zastaveno",
     "PLANNED": "Plánované",
     "RUNNING": "Běží",
     "FAILED": "Chyba",
