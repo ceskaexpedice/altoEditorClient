@@ -33,8 +33,6 @@
     "stopSuccess": "Selected processes were stopped",
     "resumeSuccess": "Selected processes were resumed",
     "actionFailed": "The process action failed"
-    "logIn": "Login",
-
   },
   "desc": {
     "id": "Id",
@@ -48,6 +46,7 @@
     "priority": "Priority",
     "type": "Type",
     "instance": "Instance",
+    "automaticallyRestore": "Automatically refresh",
     "date": "Date",
     "edited": "Edited",
     "substate": "Substate",
@@ -68,7 +67,11 @@
     "version": "Version",
     "version0": "Original version",
     "versionPero": "Generated version by PERO",
-    "connectedInstance": "Connected instance"
+    "connectedInstance": "Connected instance",
+    "softwareCreator": "Software creator",
+    "softwareName": "Software name",
+    "softwareVersion": "Software version",
+    "applicationDescription": "Application description"
   },
   "model": {
     "PAGE": "Page",

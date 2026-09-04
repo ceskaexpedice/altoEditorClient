@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -45,13 +45,16 @@ const year = today.getFullYear();
   styleUrls: ['./process-management.component.scss']
 })
 
-export class ProcessManagementComponent {
+export class ProcessManagementComponent implements OnDestroy {
+  private readonly refreshIntervalMs = 5000;
+  private refreshTimer?: ReturnType<typeof setInterval>;
+
   displayedColumns: string[] = ['select', 'id', 'pid', 'createDate', 'updateDate', 'state', 'subState', 'priority', 'type', 'instance'];
   filterColumns: string[] = [];
 
   batches: Batch[] = [];
   selection = new SelectionModel<Batch>(true, []);
-  actionInProgress = false;
+  // actionInProgress = false;
   sortBy: string = 'updateDate';
   orderSort: string = 'desc';
   totalRows: number = 0;
@@ -73,6 +76,7 @@ export class ProcessManagementComponent {
   startShiftClickIdx: number;
   lastClickIdx: number;
   totalSelected: number = 0;
+  autoRefresh = false;
 
   constructor(
     private _adapter: DateAdapter<any>,
@@ -95,6 +99,25 @@ export class ProcessManagementComponent {
     });
   }
 
+  ngOnDestroy(): void {
+    this.clearRefreshTimer();
+  }
+
+  setRefresh(): void {
+    this.clearRefreshTimer();
+    if (this.autoRefresh) {
+      this.getBatches();
+      this.refreshTimer = setInterval(() => this.getBatches(), this.refreshIntervalMs);
+    }
+  }
+
+  private clearRefreshTimer(): void {
+    if (this.refreshTimer !== undefined) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = undefined;
+    }
+  }
+
   getBatches() {
 
     const start = this.pageIndex * this.pageSize;
@@ -112,6 +135,7 @@ export class ProcessManagementComponent {
       this.batches = res.data;
       this.totalRows = res.totalRows;
       this.selection.clear();
+      this.updateSelectedCount();
     });
   }
 
@@ -125,6 +149,12 @@ export class ProcessManagementComponent {
     } else {
       this.selection.select(...this.batches);
     }
+    this.updateSelectedCount();
+  }
+
+  toggleRow(row: Batch): void {
+    this.selection.toggle(row);
+    this.updateSelectedCount();
   }
 
   canStopSelected(): boolean {
@@ -154,10 +184,10 @@ export class ProcessManagementComponent {
   }
 
   private runBatchAction(request: any, successMessage: string): void {
-    this.actionInProgress = true;
+    // this.actionInProgress = true;
     request.subscribe({
       next: (res: any) => {
-        this.actionInProgress = false;
+        // this.actionInProgress = false;
         if (res.errors?.length) {
           this.service.showSnackBar(res.errors[0], true);
           return;
@@ -166,7 +196,7 @@ export class ProcessManagementComponent {
         this.getBatches();
       },
       error: (error: any) => {
-        this.actionInProgress = false;
+        // this.actionInProgress = false;
         this.service.showSnackBar(error?.error?.errors?.[0] || error?.message || 'process.actionFailed', true);
       }
     });
@@ -203,7 +233,7 @@ export class ProcessManagementComponent {
 
   deleteBatches() {
     const params: any = {};
-    params.id = this.batches.filter(b => b.selected).map(b => b.id);
+    params.id = this.selection.selected.map(batch => batch.id);
     this.service.deleteBatches(params).subscribe(res => {
           if (res.errors) {
             this.service.showSnackBar(res.errors[0], true);
@@ -249,36 +279,36 @@ export class ProcessManagementComponent {
 
   select(item: Batch, idx: number, event: MouseEvent) {
     if (event && (event.metaKey || event.ctrlKey)) {
-      item.selected = !item.selected;
+      this.selection.toggle(item);
       this.startShiftClickIdx = idx;
     } else if (event && event.shiftKey) {
       if (this.startShiftClickIdx > -1) {
         const oldFrom = Math.min(this.startShiftClickIdx, this.lastClickIdx);
         const oldTo = Math.max(this.startShiftClickIdx, this.lastClickIdx);
-        for (let i = oldFrom; i <= oldTo; i++) {
-          this.batches[i].selected = false;
-        }
+        this.selection.deselect(...this.batches.slice(oldFrom, oldTo + 1));
         const from = Math.min(this.startShiftClickIdx, idx);
         const to = Math.max(this.startShiftClickIdx, idx);
-        for (let i = from; i <= to; i++) {
-          this.batches[i].selected = true;
-        }
+        this.selection.select(...this.batches.slice(from, to + 1));
       } else {
         // nic neni.
-        this.batches.forEach(i => i.selected = false);
-        item.selected = true;
+        this.selection.clear();
+        this.selection.select(item);
         this.startShiftClickIdx = idx;
       }
       window.getSelection().empty();
     } else {
-      this.batches.forEach(i => i.selected = false);
-      item.selected = true;
+      this.selection.clear();
+      this.selection.select(item);
       this.startShiftClickIdx = idx;
     }
 
     this.lastClickIdx = idx;
-    this.totalSelected = this.batches.filter(i => i.selected).length;
+    this.updateSelectedCount();
     this.selectedItem = item;
+  }
+
+  private updateSelectedCount(): void {
+    this.totalSelected = this.selection.selected.length;
   }
 
 }

@@ -46,6 +46,7 @@
     "priority": "Priorita",
     "type": "Typ",
     "instance": "Instance",
+    "automaticallyRestore": "Automaticky obnovit",
     "date": "Datum",
     "edited": "Editoval",
     "substate": "Podstav",
@@ -66,7 +67,11 @@
     "version": "Verze",
     "version0": "Původní verze objektu",
     "versionPero": "Vygenerovaná verze pomocí PERO",
-    "connectedInstance": "Připojená instance"
+    "connectedInstance": "Připojená instance",
+    "softwareCreator": "Tvůrce softwaru",
+    "softwareName": "Název softwaru",
+    "softwareVersion": "Verze softwaru",
+    "applicationDescription": "Popis aplikace"
   },
   "model": {
     "PAGE": "Stránka",
